@@ -1,29 +1,22 @@
 # Deployment
 
-## Environment
-Required variables will be documented in .env.example.
+## Target
+Production target: Cloudflare Workers.
 
-Public:
-- NEXT_PUBLIC_SUPABASE_URL
-- NEXT_PUBLIC_SUPABASE_ANON_KEY
+Cloudflare currently recommends vinext for new Next.js applications on Workers. The project keeps the application architecture portable so the deployment adapter can change later without redesigning the product. [Cloudflare Next.js Workers guide](https://developers.cloudflare.com/workers/framework-guides/web-apps/nextjs/).
 
-Server-only:
-- SUPABASE_SERVICE_ROLE_KEY
-- payment provider secrets
-- other integration secrets
+## Database
+Supabase PostgreSQL remains the application database and Auth provider. Cloudflare documents Supabase integration directly and supports PostgreSQL connectivity through Hyperdrive when direct server-side database access is needed.
 
-## Development
-1. Install dependencies.
-2. Configure Supabase.
-3. Apply migrations.
-4. Seed development data if desired.
-5. Run lint/typecheck/build.
-6. Start local development server.
+## Production checklist
+- Configure Workers project.
+- Configure environment variables/secrets.
+- Apply Supabase migrations.
+- Configure Supabase Auth redirect URLs.
+- Configure custom domain.
+- Run build/typecheck.
+- Test authentication, booking, RLS and storage.
+- Verify sitemap/robots and public SEO pages.
 
-## Production
-- Configure production environment variables.
-- Apply database migrations.
-- Deploy application.
-- Configure domain and HTTPS.
-- Verify auth redirects and storage policies.
-- Verify sitemap and robots.
+## Portability
+Do not couple business logic to Cloudflare-only APIs unless isolated behind adapters.
