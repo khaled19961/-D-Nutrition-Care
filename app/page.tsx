@@ -105,16 +105,37 @@ export default async function HomePage() {
       <main>
         <section className="hero-storefront" aria-label="البنر الرئيسي">
           <div className="container">
-            {firstBanner ? (
-              <Link href={firstBanner.link_url || "#"} className="home-main-banner">
-                <img src={firstBanner.image_url} alt={firstBanner.alt_ar || firstBanner.title_ar || "البنر الرئيسي"} fetchPriority="high" decoding="async" />
-                {(firstBanner.title_ar || firstBanner.subtitle_ar) && (
-                  <div className="home-main-banner-caption">
-                    {firstBanner.title_ar ? <strong>{firstBanner.title_ar}</strong> : null}
-                    {firstBanner.subtitle_ar ? <span>{firstBanner.subtitle_ar}</span> : null}
+            {activeBanners.length ? (
+              <div className="home-hero-layout">
+                <div className="home-hero-fixed">
+                  {[activeBanners[1] || activeBanners[0], activeBanners[2] || activeBanners[0]].map((banner, index) => (
+                    <Link key={`${banner.id}-fixed-${index}`} href={banner.link_url || "#"} className="home-hero-fixed-banner">
+                      <img src={banner.image_url} alt={banner.alt_ar || banner.title_ar || "عرض"} loading="eager" decoding="async" />
+                      {(banner.title_ar || banner.subtitle_ar) && (
+                        <div className="home-main-banner-caption">
+                          {banner.title_ar ? <strong>{banner.title_ar}</strong> : null}
+                          {banner.subtitle_ar ? <span>{banner.subtitle_ar}</span> : null}
+                        </div>
+                      )}
+                    </Link>
+                  ))}
+                </div>
+                <div className="home-hero-slider" aria-label="عروض متحركة">
+                  <div className="home-hero-slider-track">
+                    {[...activeBanners, ...activeBanners].map((banner, index) => (
+                      <Link key={`${banner.id}-slide-${index}`} href={banner.link_url || "#"} className="home-hero-slide">
+                        <img src={banner.image_url} alt={banner.alt_ar || banner.title_ar || "البنر الرئيسي"} loading={index === 0 ? "eager" : "lazy"} decoding="async" />
+                        {(banner.title_ar || banner.subtitle_ar) && (
+                          <div className="home-main-banner-caption">
+                            {banner.title_ar ? <strong>{banner.title_ar}</strong> : null}
+                            {banner.subtitle_ar ? <span>{banner.subtitle_ar}</span> : null}
+                          </div>
+                        )}
+                      </Link>
+                    ))}
                   </div>
-                )}
-              </Link>
+                </div>
+              </div>
             ) : (
               <div className="hero-banner-empty"><div><span>ابدأ رحلتك الصحية</span><h1>منتجات مختارة لصحتك وعافيتك</h1><p>تصفح المنتجات والعروض من مكان واحد.</p></div></div>
             )}
