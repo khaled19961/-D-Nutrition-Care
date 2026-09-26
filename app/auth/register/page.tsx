@@ -4,6 +4,7 @@ import { FormEvent, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createSupabaseBrowserClient } from "@/lib/supabase/browser";
+import { SiteChrome } from "@/components/site-chrome";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -48,7 +49,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[var(--background)] py-12">
+    <SiteChrome><main className="min-h-screen bg-[var(--background)] py-12">
       <div className="container flex min-h-[80vh] items-center justify-center">
         <section className="w-full max-w-lg rounded-3xl border border-[var(--border)] bg-white p-8 shadow-sm">
           <Link href="/" className="text-sm font-semibold text-[var(--primary)]">← العودة للرئيسية</Link>
