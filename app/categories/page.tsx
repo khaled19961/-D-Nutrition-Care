@@ -1,22 +1,8 @@
 import Link from "next/link";
 import { SiteChrome } from "@/components/site-chrome";
-
-const categories = [
-  ["التغذية العلاجية","استشارات غذائية للحالات والاحتياجات الصحية المختلفة."],
-  ["إنقاص الوزن","متابعة غذائية تساعدك على بناء عادات صحية قابلة للاستمرار."],
-  ["التغذية الرياضية","تغذية مخصصة للأداء الرياضي والتعافي وتحقيق الأهداف."],
-  ["تغذية الأطفال","إرشاد غذائي مناسب لاحتياجات الطفل ومراحل نموه."],
-  ["زيادة الوزن","خطط غذائية منظمة لرفع المدخول الغذائي بطريقة مناسبة."],
-  ["التغذية للحالات المزمنة","متابعة غذائية مرتبطة بالاحتياجات الصحية الموصى بها."],
-  ["الاستشارات العامة","تقييم احتياجك الغذائي والبدء بخطوات عملية."],
-  ["الأخصائيون","تصفح الأخصائيين المتاحين واختيار الموعد المناسب."]
-];
-
-export default function CategoriesPage() {
-  return <SiteChrome><main><section className="moving-strip"><div className="moving-strip-track"><span>اختر المجال المناسب لاحتياجك</span><span>انتقل مباشرة إلى الأخصائي والحجز</span><span>خدمات غذائية أونلاين</span><span>اختر المجال المناسب لاحتياجك</span><span>انتقل مباشرة إلى الأخصائي والحجز</span><span>خدمات غذائية أونلاين</span></div></section>
-    <section className="page-hero"><div className="container"><span>الفئات</span><h1>اختر مجال الرعاية الغذائية الذي يناسبك</h1><p>تصفح الخدمات حسب الهدف أو الاحتياج ثم انتقل مباشرة إلى الأخصائي والحجز.</p></div></section>
-    <section><div className="container"><div className="category-grid">
-      {categories.map(([title,text]) => <Link href={title === "الأخصائيون" ? "/nutritionists" : "/booking"} className="category-card" key={title}><div><h3>{title}</h3><p>{text}</p></div><span className="arrow">←</span></Link>)}
-    </div></div></section>
-  </main></SiteChrome>;
-}
+import { createSupabaseServerClient } from "@/lib/supabase/server";
+export const revalidate=60;
+export default async function CategoriesPage(){
+ const supabase=await createSupabaseServerClient();
+ const {data,error}=await supabase.from("store_categories").select("id,name_ar,slug,description_ar").eq("is_active",true).order("sort_order").order("name_ar");
+ return <SiteChrome><main><section className="page-hero"><div className="container"><span>الفئات</span><h1>تسوق حسب الفئة</h1><p>الفئات المنشورة فعلياً في كتالوج المتجر.</p></div></section><section className="storefront-section"><div className="container">{error?<div className="empty-state"><h2>تعذر تحميل الفئات</h2></div>:data?.length?<div className="category-grid">{data.map(cat=><Link href={`/store?category=${cat.slug}`} className="category-card" key={cat.id}><div><h3>{cat.name_ar}</h3>{cat.description_ar?<p>{cat.description_ar}</p>:null}</div><span className="arrow">←</span></Link>)}</div>:<div className="empty-state"><h2>لا توجد فئات متجر منشورة</h2><p>لن تظهر فئات قبل اعتمادها من الإدارة.</p></div>}</div></section></main></SiteChrome>}
