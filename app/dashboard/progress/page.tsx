@@ -30,7 +30,11 @@ export default function ProgressPage() {
       .select("id,recorded_at,weight_kg,height_cm,bmi,body_fat_percentage,waist_cm,notes")
       .order("recorded_at", { ascending: false });
 
-    if (error) setError(error.message);
+    if (error) setError(
+      error.message.includes("active_program_required")
+        ? "أضف برنامجاً غذائياً مرتبطاً بأخصائي أولاً حتى يمكن ربط القياسات بالمتابعة."
+        : error.message
+    );
     else setRecords(data ?? []);
   }
 
@@ -47,12 +51,11 @@ export default function ProgressPage() {
     const waistValue = waist ? Number(waist) : null;
     const bmi = w > 0 && h > 0 ? Number((w / Math.pow(h / 100, 2)).toFixed(2)) : null;
 
-    const { error } = await supabase.from("progress_records").insert({
-      weight_kg: w || null,
-      height_cm: h || null,
-      bmi,
-      waist_cm: waistValue,
-      notes: notes.trim() || null
+    const { error } = await supabase.rpc("record_progress", {
+      p_weight_kg: w || null,
+      p_height_cm: h || null,
+      p_waist_cm: waistValue,
+      p_notes: notes.trim() || null
     });
 
     if (error) setError(error.message);
