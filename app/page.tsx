@@ -74,6 +74,13 @@ export default function HomePage() {
         </div>
       </section>
 
+      <section className="feature-banner">
+        <div className="container feature-banner-inner">
+          <div><span className="eyebrow">ابدأ من هنا</span><h2>خدمة غذائية مصممة لتناسب هدفك</h2><p>اختر الأخصائي أو الخدمة ثم انتقل مباشرة إلى الموعد المتاح.</p></div>
+          <a href="/booking" className="primary-btn large">ابدأ الحجز</a>
+        </div>
+      </section>
+
       <section className="quick-categories">
         <div className="container">
           <div className="section-heading">
