@@ -8,18 +8,9 @@ export default async function NutritionistDetailPage({ params }: { params: Promi
   const { id } = await params;
   const supabase = await createSupabaseServerClient();
 
-  const { data: nutritionist } = await supabase
-    .from("nutritionists")
-    .select("id,bio,years_experience,consultation_fee,currency,profiles!inner(full_name,avatar_url)")
-    .eq("id", id)
-    .eq("verification_status", "verified")
-    .maybeSingle();
-
+  const { data: publicRows } = await supabase.rpc("get_public_nutritionist", { p_id: id });
+  const nutritionist = publicRows?.[0];
   if (!nutritionist) notFound();
-
-  const profile: any = Array.isArray((nutritionist as any).profiles)
-    ? (nutritionist as any).profiles[0]
-    : (nutritionist as any).profiles;
 
   const { data: services } = await supabase
     .from("services")
@@ -34,10 +25,10 @@ export default async function NutritionistDetailPage({ params }: { params: Promi
       <section className="mt-6 rounded-3xl border border-[var(--border)] bg-white p-7 md:p-10">
         <div className="flex flex-wrap items-center gap-5">
           <div className="grid h-24 w-24 place-items-center rounded-3xl bg-emerald-50 text-3xl font-bold text-[var(--primary)]">
-            {(profile?.full_name || "أ").slice(0, 1)}
+            {(nutritionist.full_name || "أ").slice(0, 1)}
           </div>
           <div>
-            <h1 className="text-3xl font-extrabold">{profile?.full_name || "أخصائي تغذية"}</h1>
+            <h1 className="text-3xl font-extrabold">{nutritionist.full_name || "أخصائي تغذية"}</h1>
             <p className="mt-2 text-[var(--muted)]">{nutritionist.years_experience || 0} سنوات خبرة</p>
           </div>
         </div>
