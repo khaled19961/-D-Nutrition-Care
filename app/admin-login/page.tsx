@@ -36,8 +36,11 @@ export default function AdminLoginPage() {
         return;
       }
 
-      router.replace("/admin");
-      router.refresh();
+      // Force a full navigation after authentication. This avoids leaving the
+      // login button in the pending state when the App Router transition is
+      // delayed by the Cloudflare/Vinext runtime or auth cookie refresh.
+      setPending(false);
+      window.location.replace("/admin");
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "تعذر تسجيل الدخول حالياً.");
       setPending(false);
