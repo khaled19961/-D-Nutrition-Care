@@ -109,5 +109,6 @@ export default function ProgressPage() {
         </section>
       </div>
     </main>
+    </SiteChrome>
   );
 }
