@@ -47,9 +47,8 @@ export default function AppointmentsPage() {
     else await load();
     setBusyId("");
   }
-
   return (
-    <SiteChrome><main className="container py-10">
+    <main className="container py-10">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="text-3xl font-extrabold">مواعيدي</h1>
@@ -91,6 +90,5 @@ export default function AppointmentsPage() {
         })}
       </section>
     </main>
-    </SiteChrome>
   );
 }
