@@ -14,6 +14,7 @@ export default function ServicesPage() {
   const [price, setPrice] = useState("");
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
+  const [saving, setSaving] = useState(false);
 
   async function load() {
     const supabase = createSupabaseBrowserClient();
@@ -31,24 +32,31 @@ export default function ServicesPage() {
   async function addService(event: FormEvent) {
     event.preventDefault();
     setError(""); setMessage("");
+    const durationValue = Number(duration);
+    const priceValue = Number(price);
+    if (!name.trim()) { setError("اكتب اسم الخدمة."); return; }
+    if (!Number.isInteger(durationValue) || durationValue < 15) { setError("مدة الخدمة يجب أن تكون 15 دقيقة أو أكثر."); return; }
+    if (!Number.isFinite(priceValue) || priceValue < 0) { setError("أدخل السعر بشكل صحيح."); return; }
+    setSaving(true);
     const supabase = createSupabaseBrowserClient();
     const { error } = await supabase.from("services").insert({
       nutritionist_id: nutritionistId,
       name_ar: name.trim(),
       description_ar: description.trim() || null,
-      duration_minutes: Number(duration),
-      price: Number(price),
+      duration_minutes: durationValue,
+      price: priceValue,
       currency: "SAR",
       is_active: true
     });
-    if (error) setError(error.message);
+    setSaving(false);
+    if (error) setError("تعذر إضافة الخدمة. تحقق من البيانات وحاول مرة أخرى.");
     else { setMessage("تمت إضافة الخدمة."); setName(""); setDescription(""); setPrice(""); await load(); }
   }
 
   async function toggle(service: Service) {
     const supabase = createSupabaseBrowserClient();
     const { error } = await supabase.from("services").update({ is_active: !service.is_active }).eq("id", service.id);
-    if (error) setError(error.message); else await load();
+    if (error) setError("تعذر تغيير حالة الخدمة."); else await load();
   }
 
   return (
@@ -63,7 +71,7 @@ export default function ServicesPage() {
           <input required type="number" min="0" step="0.01" value={price} onChange={(e)=>setPrice(e.target.value)} placeholder="السعر بالريال" className="w-full rounded-xl border border-[var(--border)] px-4 py-3" />
           {error && <p className="rounded-xl bg-red-50 p-3 text-sm text-red-700">{error}</p>}
           {message && <p className="rounded-xl bg-emerald-50 p-3 text-sm text-emerald-800">{message}</p>}
-          <button className="w-full rounded-xl bg-[var(--primary)] px-5 py-3 font-bold text-white">إضافة الخدمة</button>
+          <button disabled={saving} className="w-full rounded-xl bg-[var(--primary)] px-5 py-3 font-bold text-white disabled:opacity-50">{saving ? "جارٍ الحفظ..." : "إضافة الخدمة"}</button>
         </form>
         <section className="space-y-3">
           {services.map((service) => (
