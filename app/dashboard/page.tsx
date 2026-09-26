@@ -26,6 +26,15 @@ export default async function DashboardPage() {
     .order("starts_at", { ascending: true })
     .limit(5);
 
+  const upcoming = appointments ?? [];
+  const statusLabels: Record<string, string> = {
+    pending: "قيد الانتظار",
+    confirmed: "مؤكد",
+    completed: "مكتمل",
+    cancelled: "ملغي",
+    no_show: "لم يحضر",
+  };
+
   return (
     <main className="min-h-screen bg-[var(--background)] py-10">
       <div className="container">
