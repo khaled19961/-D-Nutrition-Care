@@ -27,29 +27,53 @@ export default async function HomePage() {
   return (
     <SiteChrome>
       <main>
-        <section className="hero-banner-area" aria-label="البنرات الرئيسية">
-          {activeBanners.length ? (
-            <div className="hero-banner-carousel" style={{"--banner-count": activeBanners.length} as CSSProperties}>
-              {activeBanners.map((banner, index) => {
-                const content = <div className="hero-banner-slide" style={{"--banner-index": index} as CSSProperties}>
-                  <img src={banner.image_url} alt={banner.alt_ar || banner.title_ar || "بنر D-Nutrition-Care"} loading={index === 0 ? "eager" : "lazy"} fetchPriority={index === 0 ? "high" : "low"} decoding="async" />
-                  {(banner.title_ar || banner.subtitle_ar) && (
-                    <div className="hero-banner-overlay">
-                      {banner.title_ar && <h1>{banner.title_ar}</h1>}
-                      {banner.subtitle_ar && <p>{banner.subtitle_ar}</p>}
-                    </div>
-                  )}
-                </div>;
-                return banner.link_url ? <Link href={banner.link_url} key={banner.id} className="hero-banner-link">{content}</Link> : <div key={banner.id}>{content}</div>;
-              })}
-            </div>
-          ) : (
-            <div className="hero-banner-empty">
-              <div className="container"><span>ابدأ رحلتك الغذائية</span><h1>رعاية غذائية تناسب احتياجك</h1><p>استعرض الأخصائيين والخدمات والبرامج الغذائية من مكان واحد.</p></div>
-            </div>
-          )}
+        <section className="hero-storefront" aria-label="العروض الرئيسية">
+          <div className="container">
+            {activeBanners.length ? (
+              <div className="hero-mosaic">
+                <div className="hero-mosaic-side">
+                  {activeBanners.slice(1,3).map((banner)=>(
+                    <Link href={banner.link_url || "#"} className="hero-mosaic-small" key={banner.id}>
+                      <img src={banner.image_url} alt={banner.alt_ar || banner.title_ar || "بنر"} loading="lazy" decoding="async"/>
+                      {(banner.title_ar || banner.subtitle_ar) && <div className="hero-mosaic-caption"><strong>{banner.title_ar}</strong><span>{banner.subtitle_ar}</span></div>}
+                    </Link>
+                  ))}
+                </div>
+                <div className="hero-mosaic-main">
+                  {activeBanners.slice(0,1).map((banner)=>(
+                    <Link href={banner.link_url || "#"} className="hero-mosaic-large" key={banner.id}>
+                      <img src={banner.image_url} alt={banner.alt_ar || banner.title_ar || "بنر رئيسي"} fetchPriority="high" decoding="async"/>
+                      {(banner.title_ar || banner.subtitle_ar) && <div className="hero-mosaic-caption"><strong>{banner.title_ar}</strong><span>{banner.subtitle_ar}</span></div>}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="hero-banner-empty"><div><span>ابدأ رحلتك الغذائية</span><h1>رعاية غذائية تناسب احتياجك</h1><p>استشارات وخطط غذائية ومتابعة من مكان واحد.</p></div></div>
+            )}
+            {activeBanners.length > 3 && (
+              <div className="hero-banner-dots" aria-label="بنرات إضافية">
+                {activeBanners.slice(3).map((banner)=>(
+                  <Link href={banner.link_url || "#"} key={banner.id} className="hero-banner-mini">
+                    <img src={banner.image_url} alt={banner.alt_ar || "بنر"} loading="lazy" decoding="async"/>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
         </section>
 
+        <section className="quick-categories">
+          <div className="container quick-categories-track">
+            {categories.map(([title,text,href],index)=>(
+              <Link href={href} className="quick-category" key={title}>
+                <span className={"quick-category-icon icon-"+(index+1)}>{["⚕","⚖","🏃","👶","🥗","❤️"][index]}</span>
+                <strong>{title}</strong>
+                <small>{text}</small>
+              </Link>
+            ))}
+          </div>
+        </section>
         <section className="storefront-section"><div className="container"><div className="section-heading split"><div><span>الفئات</span><h2>تصفح حسب احتياجك</h2></div><Link href="/categories" className="text-link">عرض الكل ←</Link></div><div className="horizontal-rail category-rail">{categories.map(([title,text,href])=><Link href={href} className="category-card storefront-card" key={title}><strong>{title}</strong><span>{text}</span><small>استكشف ←</small></Link>)}</div></div></section>
         <section className="storefront-section storefront-tinted"><div className="container"><div className="section-heading split"><div><span>الخدمات</span><h2>ابدأ بالخدمة التي تحتاجها</h2></div><Link href="/booking" className="text-link">الحجز ←</Link></div><div className="horizontal-rail service-rail">{services.map(([title,text,href])=><Link href={href} className="service-card storefront-service" key={title}><small>خدمة</small><h3>{title}</h3><p>{text}</p><b>ابدأ الآن ←</b></Link>)}</div></div></section>
         <section className="feature-banner storefront-feature"><div className="container feature-banner-inner"><div><span className="eyebrow">الحجز أونلاين</span><h2>اختر الموعد المناسب لك</h2><p>استعرض الأخصائيين ثم اختر الخدمة والموعد المتاح وأكمل الحجز من حسابك.</p></div><Link href="/booking" className="primary-btn large">ابدأ الحجز</Link></div></section>
