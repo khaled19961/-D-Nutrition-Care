@@ -98,3 +98,18 @@ section{padding:68px 0}.section-heading{margin-bottom:28px}.section-heading.cent
 
 .appointments-panel{padding:0;overflow:hidden}.appointments-list{display:grid}.appointment-row{display:grid;grid-template-columns:minmax(210px,1fr) 190px auto;gap:18px;align-items:center;padding:18px 22px;border-bottom:1px solid var(--border)}.appointment-row:last-child{border-bottom:0}.appointment-person{display:flex;align-items:center;gap:10px}.appointment-person strong,.appointment-person small,.appointment-time strong,.appointment-time span{display:block}.appointment-person small,.appointment-time span{margin-top:4px;color:var(--muted);font-size:11px}.appointment-time{font-size:13px}.appointment-note{grid-column:1/-1;margin:0;padding:10px 12px;border-radius:9px;background:var(--background);font-size:12px;line-height:1.7}.appointment-actions{grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap}.appointment-actions button{border:1px solid var(--border);border-radius:9px;background:#fff;padding:8px 11px;font:inherit;font-size:11px;font-weight:800;cursor:pointer}.appointment-actions button:first-child{color:var(--primary);border-color:var(--primary)}.appointment-actions button:disabled{opacity:.5;cursor:wait}
 @media(max-width:800px){.appointment-row{grid-template-columns:1fr auto}.appointment-time{grid-column:1}.appointment-row>.status-pill{grid-column:2;grid-row:1}.appointment-actions,.appointment-note{grid-column:1/-1}}
+
+/* Homepage storefront rails */
+.storefront-section{padding:48px 0;background:#fff}
+.storefront-tinted{background:#f3f7ff}
+.storefront-hero .hero-content{padding:62px 0 68px}
+.horizontal-rail{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:2px 2px 12px;scrollbar-width:thin}
+.horizontal-rail>*{flex:0 0 280px;scroll-snap-align:start}
+.category-rail>*{flex-basis:205px}
+.storefront-card{min-height:150px;border-radius:16px;padding:20px;display:flex;flex-direction:column;justify-content:space-between;background:#fff;border:1px solid var(--border)}
+.storefront-card strong{font-size:17px}.storefront-card span{font-size:12px;color:var(--muted);line-height:1.8}.storefront-card small,.storefront-service b,.content-card>a,.storefront-nutritionist a{color:var(--primary);font-size:12px;font-weight:800}
+.storefront-service{min-height:190px;border-radius:16px}.storefront-service small,.content-card small{color:var(--primary);font-size:11px;font-weight:800}.storefront-service h3,.content-card h3{margin:12px 0 8px}.storefront-service p,.content-card p{margin:0;color:var(--muted);font-size:13px;line-height:1.8}.storefront-service b{display:block;margin-top:20px}
+.storefront-feature{padding:24px 0}.storefront-feature .feature-banner-inner{background:#f3f7ff;border-color:#dbe6f5}
+.storefront-nutritionist{flex-basis:330px;border-radius:18px}.storefront-nutritionist .nutritionist-bio{min-height:54px}
+.content-card{min-height:210px;border-radius:16px}.content-card .program-meta{margin-top:20px}
+@media(max-width:600px){.storefront-section{padding:38px 0}.storefront-hero .hero-content{padding:46px 0 52px}.horizontal-rail{margin-inline:-12px;padding-inline:12px}.horizontal-rail>*{flex-basis:82vw}.category-rail>*{flex-basis:68vw}.storefront-card{min-height:145px}.storefront-feature{padding:18px 0}.storefront-feature .feature-banner-inner{padding:22px}.storefront-nutritionist{flex-basis:84vw}}
