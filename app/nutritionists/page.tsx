@@ -18,7 +18,7 @@ export default async function NutritionistsPage({ searchParams }: { searchParams
   }> | null;
 
   return (
-    <main className="container py-14">
+    <SiteChrome>\n      <main className="container py-14">
       <div className="max-w-2xl">
         <h1 className="text-4xl font-extrabold">أخصائيو التغذية</h1>
         <p className="mt-4 leading-8 text-[var(--muted)]">تعرّف على الأخصائيين المتاحين واختر الخدمة والموعد المناسبين لك.</p>
@@ -36,10 +36,10 @@ export default async function NutritionistsPage({ searchParams }: { searchParams
                 </div>
                 <div>
                   <h2 className="font-bold">{item.full_name || "أخصائي تغذية"}</h2>
-                  <p className="text-sm text-[var(--muted)]">{item.years_experience || 0} سنوات خبرة</p>
+                  <p className="text-sm text-[var(--muted)]">{item.years_experience != null ? `${item.years_experience} سنوات خبرة` : "الخبرة غير محددة"}</p>
                 </div>
               </div>
-              <p className="mt-5 min-h-14 text-sm leading-7 text-[var(--muted)]">{item.bio || "أخصائي تغذية معتمد لتقديم الاستشارات والمتابعة."}</p>
+              <p className="mt-5 min-h-14 text-sm leading-7 text-[var(--muted)]">{item.bio || "لم تتم إضافة نبذة تعريفية بعد."}</p>
               <div className="mt-5 flex items-center justify-between gap-3">
                 <span className="font-bold text-[var(--primary)]">{item.consultation_fee ?? "—"} {item.currency || "SAR"}</span>
                 <Link href={`/nutritionists/${item.id}`} className="rounded-xl bg-[var(--primary)] px-4 py-2 text-sm font-bold text-white">عرض الملف</Link>
