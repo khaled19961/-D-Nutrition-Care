@@ -1,7 +1,8 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import Link from "next/link";
 
 export const dynamic = "force-dynamic";
+
+const statusLabels: Record<string, string> = { planned: "مخطط", active: "نشط", completed: "مكتمل", cancelled: "ملغي" };
 
 export default async function DashboardProgramsPage() {
   const supabase = await createSupabaseServerClient();
@@ -20,10 +21,10 @@ export default async function DashboardProgramsPage() {
           return <article key={item.id} className="rounded-3xl border border-[var(--border)] bg-white p-6">
             <div className="flex flex-wrap justify-between gap-4">
               <div><h2 className="text-xl font-bold">{program?.title_ar || "برنامج غذائي"}</h2><p className="mt-2 leading-7 text-[var(--muted)]">{program?.description_ar || ""}</p></div>
-              <span className="rounded-full bg-emerald-50 px-3 py-1 text-sm text-[var(--primary)]">{item.status}</span>
+              <span className="rounded-full bg-emerald-50 px-3 py-1 text-sm text-[var(--primary)]">{statusLabels[item.status] || item.status}</span>
             </div>
             <div className="mt-5 grid gap-3 sm:grid-cols-3 text-sm">
-              <div>البداية: {item.start_date || "—"}</div><div>النهاية: {item.end_date || "—"}</div><div>المدة: {program?.duration_days || "—"} يوم</div>
+              <div>البداية: {item.start_date ? new Date(item.start_date).toLocaleDateString("ar-SA") : "—"}</div><div>النهاية: {item.end_date ? new Date(item.end_date).toLocaleDateString("ar-SA") : "—"}</div><div>المدة: {program?.duration_days || "—"} يوم</div>
             </div>
           </article>;
         }) : <div className="rounded-3xl border border-[var(--border)] bg-white p-8 text-center text-[var(--muted)]">لا توجد برامج مرتبطة بحسابك.</div>}
