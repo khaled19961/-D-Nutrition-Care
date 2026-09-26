@@ -15,7 +15,8 @@ export default async function StorePage({ searchParams }: { searchParams: Promis
     .select("id,name_ar,slug,description_ar,price,compare_at_price,currency,stock_quantity,is_featured,is_new,store_product_images(image_url,alt_ar,sort_order)")
     .eq("is_active", true)
     .gt("stock_quantity", 0)
-    .eq(brandId ? "brand_id" : "id", brandId || "00000000-0000-0000-0000-000000000000")\n    .in("id", categoryProductIds ?? ["00000000-0000-0000-0000-000000000000"])
+    .eq(brandId ? "brand_id" : "id", brandId || "00000000-0000-0000-0000-000000000000")
+    .in("id", categoryProductIds ?? ["00000000-0000-0000-0000-000000000000"])
     .order("is_featured", { ascending: false })
     .order("created_at", { ascending: false })
     .limit(24);
