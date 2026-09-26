@@ -2,12 +2,9 @@
 
 import { FormEvent, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { createSupabaseBrowserClient } from "@/lib/supabase/browser";
 import { SiteChrome } from "@/components/site-chrome";
 
 export default function AdminLoginPage() {
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [pending, setPending] = useState(false);
@@ -18,32 +15,40 @@ export default function AdminLoginPage() {
     setPending(true);
     setError("");
 
-    const supabase = createSupabaseBrowserClient();
-    try {
-      const result = await Promise.race([
-        supabase.auth.signInWithPassword({ email, password }),
-        new Promise<never>((_, reject) =>
-          window.setTimeout(
-            () => reject(new Error("انتهت مهلة الاتصال بخدمة تسجيل الدخول. تحقق من اتصال الموقع بـ Supabase ثم حاول مرة أخرى.")),
-            15000
-          )
-        ),
-      ]);
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), 15000);
 
-      if (result.error) {
-        setError(result.error.message);
+    try {
+      const response = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "same-origin",
+        cache: "no-store",
+        body: JSON.stringify({ email, password }),
+        signal: controller.signal,
+      });
+
+      const result = (await response.json()) as { ok?: boolean; error?: string };
+
+      if (!response.ok || !result.ok) {
+        setError(result.error || "تعذر تسجيل الدخول حالياً.");
         setPending(false);
         return;
       }
 
-      // Force a full navigation after authentication. This avoids leaving the
-      // login button in the pending state when the App Router transition is
-      // delayed by the Cloudflare/Vinext runtime or auth cookie refresh.
       setPending(false);
       window.location.replace("/admin");
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "تعذر تسجيل الدخول حالياً.");
+      setError(
+        caught instanceof DOMException && caught.name === "AbortError"
+          ? "انتهت مهلة الاتصال بخدمة تسجيل الدخول. تحقق من اتصال الموقع بـ Supabase ثم حاول مرة أخرى."
+          : caught instanceof Error
+            ? caught.message
+            : "تعذر تسجيل الدخول حالياً."
+      );
       setPending(false);
+    } finally {
+      window.clearTimeout(timeoutId);
     }
   }
 
