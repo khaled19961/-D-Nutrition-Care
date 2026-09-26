@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { SiteChrome } from "@/components/site-chrome";
 
 export const revalidate = 60;
 
@@ -19,6 +18,7 @@ export default async function NutritionistDetailPage({ params }: { params: Promi
     .eq("nutritionist_id", id)
     .eq("is_active", true)
     .order("price", { ascending: true });
+
   return (
     <main className="container py-14">
       <Link href="/nutritionists" className="text-sm font-semibold text-[var(--primary)]">← جميع الأخصائيين</Link>
