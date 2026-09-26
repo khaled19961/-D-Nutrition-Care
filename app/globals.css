@@ -135,3 +135,17 @@ section{padding:68px 0}.section-heading{margin-bottom:28px}.section-heading.cent
   .section-nav-inner{gap:22px;padding-block:0}
   .section-nav a{padding:11px 0;font-size:11px}
 }
+
+.health-weight-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,.8fr);gap:18px;align-items:stretch}
+.health-weight-card,.health-weight-result{background:#fff;border:1px solid var(--border);border-radius:18px;padding:26px}
+.health-weight-card{display:grid;gap:16px}
+.health-weight-card label{display:grid;gap:7px;font-size:13px;font-weight:800}
+.health-weight-card input{border:1px solid var(--border);border-radius:10px;padding:12px;outline:0}
+.health-weight-card input:focus{border-color:var(--primary)}
+.health-weight-card button:disabled{opacity:.45;cursor:not-allowed}
+.health-weight-result{display:flex;flex-direction:column;justify-content:center}
+.health-weight-result>span{color:var(--primary);font-size:13px;font-weight:800}
+.health-weight-result strong{font-size:54px;margin:8px 0;color:#173b33}
+.health-weight-result p{margin:0;color:var(--muted);line-height:1.8}
+.health-weight-result small{margin-top:18px;color:var(--muted);line-height:1.7}
+@media(max-width:700px){.health-weight-layout{grid-template-columns:1fr}}
