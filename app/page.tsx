@@ -23,31 +23,33 @@ const homeCategories = [
   { name: "معدات رياضية", slug: "sports-equipment", icon: "sport" as const },
 ];
 
+const homeProductSections = [
+  { key: "combos", title: "الكومبوهات الأكثر مبيعًا!!", categorySlug: "best-selling-combos" },
+  { key: "empower", title: "امباور نيوتريشن", brandSlug: "empower-nutrition" },
+  { key: "pre-workout", title: "اكثر المنتجات مبيعا!! - قبل التمرين", categorySlug: "pre-workout" },
+  { key: "vitamins", title: "اكثر المنتجات مبيعا!! - فيتامين", categorySlug: "vitamins" },
+  { key: "proteins", title: "اكثر المنتجات مبيعا!! - البروتينات", categorySlug: "proteins" },
+  { key: "amino-acids", title: "اكثر المنتجات مبيعا!! - الأحماض الأمينية", categorySlug: "amino-acids" },
+  { key: "protein-snacks", title: "اكثر المنتجات مبيعا!! - سناك بروتين", categorySlug: "protein-snacks" },
+  { key: "sports-equipment", title: "اكثر المنتجات مبيعا!! - معدات رياضية", categorySlug: "sports-equipment" },
+  { key: "featured", title: "منتجات مميزة", featured: true },
+];
+
 export default async function HomePage() {
   const supabase = await createSupabaseServerClient();
 
-  const [{ data: banners }, { data: products }, { data: beautyCategory }] = await Promise.all([
+  const [{ data: banners }, { data: allProducts }, { data: categories }, { data: brands }] = await Promise.all([
     supabase.from("site_banners").select("id,image_url,alt_ar,title_ar,subtitle_ar,link_url").eq("is_active", true).order("sort_order", { ascending: true }).order("created_at", { ascending: false }),
-    supabase.from("store_products").select("id,name_ar,slug,price,compare_at_price,currency,stock_quantity,is_featured,is_new,store_product_images(image_url,alt_ar,sort_order)").eq("is_active", true).gt("stock_quantity", 0).eq("is_featured", true).order("created_at", { ascending: false }).limit(8),
-    supabase.from("store_categories").select("id").eq("slug", "beauty").eq("is_active", true).maybeSingle(),
+    supabase
+      .from("store_products")
+      .select("id,name_ar,slug,price,compare_at_price,currency,stock_quantity,is_featured,is_new,brand_id,store_product_images(image_url,alt_ar,sort_order),store_product_categories(category_id)")
+      .eq("is_active", true)
+      .gt("stock_quantity", 0)
+      .order("created_at", { ascending: false })
+      .limit(100),
+    supabase.from("store_categories").select("id,name_ar,slug").eq("is_active", true),
+    supabase.from("store_brands").select("id,name_ar,slug").eq("is_active", true),
   ]);
-
-  let beautyProducts: any[] = [];
-  if (beautyCategory?.id) {
-    const { data: categoryLinks } = await supabase.from("store_product_categories").select("product_id").eq("category_id", beautyCategory.id);
-    const ids = (categoryLinks ?? []).map((item) => item.product_id);
-    if (ids.length) {
-      const { data } = await supabase
-        .from("store_products")
-        .select("id,name_ar,slug,price,compare_at_price,currency,stock_quantity,is_featured,is_new,store_product_images(image_url,alt_ar,sort_order)")
-        .eq("is_active", true)
-        .gt("stock_quantity", 0)
-        .in("id", ids)
-        .order("created_at", { ascending: false })
-        .limit(8);
-      beautyProducts = data ?? [];
-    }
-  }
 
   const normalizeProducts = (items: any[]) => items.map((product) => {
     const image = [...(product.store_product_images ?? [])].sort((a: any, b: any) => (a.sort_order ?? 0) - (b.sort_order ?? 0))[0];
@@ -65,6 +67,35 @@ export default async function HomePage() {
       image_alt: image?.alt_ar ?? null,
     };
   });
+
+  const rawProducts = (allProducts ?? []) as any[];
+  const normalizedAll = normalizeProducts(rawProducts);
+  const categoryIdBySlug = new Map((categories ?? []).map((item) => [item.slug, item.id]));
+  const brandIdBySlug = new Map((brands ?? []).map((item) => [item.slug, item.id]));
+
+  const productsByCategory = (slug: string) => {
+    const categoryId = categoryIdBySlug.get(slug);
+    if (!categoryId) return [];
+    return normalizeProducts(rawProducts.filter((product) =>
+      (product.store_product_categories ?? []).some((link: any) => link.category_id === categoryId)
+    ).slice(0, 8));
+  };
+
+  const productsByBrand = (slug: string) => {
+    const brandId = brandIdBySlug.get(slug);
+    if (!brandId) return [];
+    return normalizeProducts(rawProducts.filter((product) => product.brand_id === brandId).slice(0, 8));
+  };
+
+  const featuredProducts = normalizedAll.filter((product) => product.is_featured).slice(0, 8);
+  const productSections = Object.fromEntries(homeProductSections.map((section) => [
+    section.key,
+    section.featured
+      ? featuredProducts
+      : section.brandSlug
+        ? productsByBrand(section.brandSlug)
+        : productsByCategory(section.categorySlug!),
+  ]));
 
   const activeBanners = (banners ?? []) as Banner[];
   const firstBanner = activeBanners[0];
@@ -89,7 +120,12 @@ export default async function HomePage() {
             )}
           </div>
         </section>
-        <HomeStorefront products={normalizeProducts((products ?? []) as any[])} beautyProducts={normalizeProducts(beautyProducts)} categories={homeCategories} />
+        <HomeStorefront
+          products={featuredProducts}
+          beautyProducts={productsByCategory("beauty")}
+          categories={homeCategories}
+          productSections={productSections}
+        />
       </main>
     </SiteChrome>
   );
