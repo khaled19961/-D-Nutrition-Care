@@ -74,5 +74,6 @@ export default function LoginPage() {
         </section>
       </div>
     </main>
+    </SiteChrome>
   );
 }
