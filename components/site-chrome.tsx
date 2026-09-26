@@ -10,6 +10,7 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
           <Link href="/auth/login">تسجيل الدخول</Link>
         </div>
       </div>
+      <div className="moving-strip"><div className="moving-strip-track"><span>رعاية غذائية أونلاين</span><span>اختر الأخصائي والخدمة والموعد</span><span>ابدأ حجزك من المنصة</span><span>رعاية غذائية أونلاين</span><span>اختر الأخصائي والخدمة والموعد</span><span>ابدأ حجزك من المنصة</span></div></div>
       <header className="main-header">
         <div className="container header-inner">
           <Link href="/" className="brand" aria-label="D-Nutrition-Care">
@@ -43,6 +44,7 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
         </div>
         <div className="container footer-bottom"><span>© D-Nutrition-Care</span><span>رعاية غذائية تبدأ من احتياجك</span></div>
       </footer>
+      <nav className="mobile-nav" aria-label="التنقل للجوال"><Link href="/" className="active"><small>الرئيسية</small></Link><Link href="/categories"><small>الفئات</small></Link><Link href="/offers"><small>العروض</small></Link><Link href="/cart"><small>السلة</small></Link><Link href="/more"><small>المزيد</small></Link></nav>
     </div>
   );
 }
