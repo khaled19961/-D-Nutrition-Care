@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { SiteChrome } from "@/components/site-chrome";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { StoreCartButton } from "@/components/store-cart-button";
 
 export const revalidate = 60;
 
@@ -20,6 +21,6 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const images = [...(product.store_product_images ?? [])].sort((a,b)=>(a.sort_order ?? 0)-(b.sort_order ?? 0));
   return <SiteChrome><main><section className="storefront-section"><div className="container product-detail">
     <div className="product-gallery">{images.length ? images.map((image) => <img key={image.image_url} src={image.image_url} alt={image.alt_ar || product.name_ar} />) : <div className="empty-state">صورة المنتج غير متوفرة</div>}</div>
-    <div className="product-detail-info"><span>متوفر حالياً</span><h1>{product.name_ar}</h1>{product.description_ar ? <p>{product.description_ar}</p> : null}<div className="product-price"><strong>{Number(product.price).toLocaleString("ar-SA")} {product.currency}</strong>{product.compare_at_price ? <del>{Number(product.compare_at_price).toLocaleString("ar-SA")} {product.currency}</del> : null}</div><button className="primary-btn" disabled>أضف إلى السلة</button><small>سيتم تفعيل الشراء بعد ربط السلة بخدمة الطلب والدفع المعتمدة.</small></div>
+    <div className="product-detail-info"><span>متوفر حالياً</span><h1>{product.name_ar}</h1>{product.description_ar ? <p>{product.description_ar}</p> : null}<div className="product-price"><strong>{Number(product.price).toLocaleString("ar-SA")} {product.currency}</strong>{product.compare_at_price ? <del>{Number(product.compare_at_price).toLocaleString("ar-SA")} {product.currency}</del> : null}</div><StoreCartButton item={{ productId: product.id, slug: product.slug, name: product.name_ar, price: Number(product.price), currency: product.currency, imageUrl: images[0]?.image_url }} /><small>سيتم تفعيل الشراء بعد ربط السلة بخدمة الطلب والدفع المعتمدة.</small></div>
   </div></section></main></SiteChrome>;
 }
