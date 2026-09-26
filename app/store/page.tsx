@@ -9,7 +9,6 @@ export default async function StorePage({ searchParams }: { searchParams: Promis
   const supabase = await createSupabaseServerClient();
   const categoryId = params.category ? (await supabase.from("store_categories").select("id").eq("slug", params.category).eq("is_active", true).maybeSingle()).data?.id : null;
   const brandId = params.brand ? (await supabase.from("store_brands").select("id").eq("slug", params.brand).eq("is_active", true).maybeSingle()).data?.id : null;
-  const categoryId = params.category ? (await supabase.from("store_categories").select("id").eq("slug", params.category).eq("is_active", true).maybeSingle()).data?.id : null;
   const categoryProductIds = categoryId ? (await supabase.from("store_product_categories").select("product_id").eq("category_id", categoryId)).data?.map((x) => x.product_id) : null;
   const { data: products, error } = await supabase
     .from("store_products")
