@@ -44,7 +44,7 @@ export default function GoalsPage() {
   }
 
   return (
-    <main className="container py-10">
+    <SiteChrome><SiteChrome><main className="container py-10">
       <h1 className="text-3xl font-extrabold">أهدافي</h1>
       <div className="mt-8 grid gap-6 lg:grid-cols-[360px_1fr]">
         <form onSubmit={add} className="rounded-3xl border border-[var(--border)] bg-white p-6 space-y-4">
