@@ -45,6 +45,21 @@ export default function HomePage() {
         </div>
       </header>
 
+      <section className="promo-banner" aria-label="روابط سريعة">
+        <div className="promo-track">
+          <a href="/nutritionists"><strong>اختر الأخصائي المناسب لك</strong><span>استعرض الملفات والتخصصات ثم انتقل للحجز</span></a>
+          <a href="/booking"><strong>احجز استشارتك أونلاين</strong><span>اختر الخدمة والموعد المتاح من المنصة</span></a>
+          <a href="/programs"><strong>استكشف البرامج الغذائية</strong><span>البرامج المنشورة فعلياً على المنصة</span></a>
+        </div>
+      </section>
+
+      <div className="moving-strip" aria-label="تنقل سريع">
+        <div className="moving-strip-track">
+          <span>رعاية غذائية أونلاين</span><span>أخصائيون وخدمات وحجوزات في مكان واحد</span><span>تابع حجوزاتك من حسابك</span>
+          <span>رعاية غذائية أونلاين</span><span>أخصائيون وخدمات وحجوزات في مكان واحد</span><span>تابع حجوزاتك من حسابك</span>
+        </div>
+      </div>
+
       <div className="store-tools"><div className="container store-tools-inner"><a href="/more#location">اختر العنوان</a><form action="/nutritionists" method="get" className="site-search"><input name="q" aria-label="ابحث عن خدمة أو أخصائي" placeholder="ابحث عن خدمة أو أخصائي تغذية" /><button type="submit">بحث</button></form></div></div>
 
       <section className="hero">
