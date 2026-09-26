@@ -23,6 +23,20 @@ export default async function HomePage() {
     supabase.from("site_banners").select("id,image_url,alt_ar,title_ar,subtitle_ar,link_url").eq("is_active", true).order("sort_order", { ascending: true }).order("created_at", { ascending: false })
   ]);
   const publicNutritionists = (nutritionists ?? []) as any[];
+  const categories = [
+    ["التغذية العلاجية","خطط غذائية حسب الحالة الصحية","/categories"],
+    ["إنقاص الوزن","برامج متوازنة لإدارة الوزن","/programs"],
+    ["الرياضة","تغذية وأهداف الأداء الرياضي","/programs"],
+    ["تغذية الأطفال","إرشادات غذائية مناسبة للأطفال","/articles"],
+    ["التغذية الصحية","عادات غذائية يومية أفضل","/articles"],
+    ["الصحة العامة","نصائح ومحتوى غذائي موثوق","/articles"],
+  ] as const;
+  const services = [
+    ["استشارة غذائية","جلسة مع أخصائي تغذية تناسب احتياجك","/booking"],
+    ["خطة غذائية شخصية","خطة مبنية على أهدافك واحتياجاتك","/booking"],
+    ["متابعة غذائية","متابعة مستمرة وقياس التقدم","/booking"],
+    ["برنامج إنقاص الوزن","برنامج غذائي منظم لإدارة الوزن","/programs"],
+  ] as const;
   const activeBanners = (banners ?? []) as Banner[];
   return (
     <SiteChrome>
