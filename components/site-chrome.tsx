@@ -21,7 +21,6 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
           </Link>
           <MainNav />
           <div className="header-actions">
-            <Link href="/more#location" className="login-link">اختر العنوان</Link>
             <Link href="/auth/login" className="login-link">حسابي</Link>
             <Link href="/booking" className="primary-btn">احجز استشارتك</Link>
           </div>
