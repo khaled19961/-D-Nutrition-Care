@@ -5,7 +5,15 @@ export const revalidate = 60;
 
 export default async function NutritionistsPage() {
   const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase.rpc("list_public_nutritionists");
+  const { data: rawData, error } = await supabase.rpc("list_public_nutritionists");
+  const data = rawData as Array<{
+    id: string;
+    full_name: string | null;
+    years_experience: number | null;
+    bio: string | null;
+    consultation_fee: number | null;
+    currency: string | null;
+  }> | null;
 
   return (
     <main className="container py-14">
