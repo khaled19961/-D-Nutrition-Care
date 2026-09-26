@@ -76,16 +76,6 @@ export default async function HomePage() {
             <Link href="/articles"><strong>محتوى غذائي</strong><span>اكتشف المقالات المنشورة على المنصة</span></Link>
           </div>
         </section>
-
-        <div className="store-tools">
-          <div className="container store-tools-inner">
-            <form action="/nutritionists" method="get" className="site-search">
-              <input name="q" aria-label="ابحث عن أخصائي تغذية" placeholder="ابحث عن أخصائي تغذية" />
-              <button type="submit">بحث</button>
-            </form>
-          </div>
-        </div>
-
         <section className="hero storefront-hero">
           <div className="container hero-content">
             <span className="eyebrow">D-Nutrition-Care</span>
