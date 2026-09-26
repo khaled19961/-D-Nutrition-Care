@@ -1,5 +1,4 @@
 import Link from "next/link";
-import type { CSSProperties } from "react";
 import { SiteChrome } from "@/components/site-chrome";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -24,7 +23,7 @@ export default async function HomePage() {
   ]);
   const publicNutritionists = (nutritionists ?? []) as any[];
   const categories = [
-    ["التغذية العلاجية","خطط غذائية حسب الحالة الصحية","/programs"],
+    ["التغذية العلاجية","خطط غذائية حسب الحالة الصحية","/categories"],
     ["إنقاص الوزن","برامج متوازنة لإدارة الوزن","/programs"],
     ["الرياضة","تغذية وأهداف الأداء الرياضي","/programs"],
     ["تغذية الأطفال","إرشادات غذائية مناسبة للأطفال","/articles"],
@@ -100,16 +99,3 @@ export default async function HomePage() {
   );
 }
 
-const categories = [
-  ["التغذية العلاجية","خدمات غذائية للحالات والاحتياجات الصحية","/nutritionists"],
-  ["إنقاص الوزن","خطط ومتابعة تساعدك على بناء عادات مستدامة","/programs"],
-  ["التغذية الرياضية","تغذية تدعم الأداء والتعافي والأهداف الرياضية","/nutritionists"],
-  ["تغذية الأطفال","إرشادات مناسبة لاحتياجات الطفل الغذائية","/nutritionists"],
-  ["زيادة الوزن","خطط غذائية مخصصة للوصول إلى هدفك","/programs"],
-  ["الحالات المزمنة","متابعة غذائية وفق الاحتياج الصحي","/nutritionists"],
-] as const;
-const services = [
-  ["الاستشارات الغذائية","جلسة فردية مع أخصائي تغذية","/booking"],
-  ["الخطط الغذائية","خطة تناسب هدفك ونمط حياتك","/booking"],
-  ["المتابعة الغذائية","مراجعة مستمرة للتقدم وتحديث الخطة","/dashboard"],
-] as const;
