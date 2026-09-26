@@ -402,3 +402,12 @@ h1,h2,h3,h4,h5,h6,p,span,a,button,label{overflow-wrap:anywhere}
 .home-requested-section .home-product-rating{font-size:9px;margin-bottom:4px}
 .home-requested-section .home-product-media{height:205px}
 .home-requested-section .home-product-empty{padding:18px;font-size:11px}
+
+/* Further typography reduction requested: 5px smaller for homepage requested sections */
+.home-requested-section .home-store-heading h2{font-size:18px}
+.home-requested-section .home-store-heading a{font-size:5px}
+.home-requested-section .home-product-name{font-size:7px}
+.home-requested-section .home-product-price strong{font-size:9px}
+.home-requested-section .home-add-cart{font-size:5px}
+.home-requested-section .home-product-rating{font-size:4px}
+.home-requested-section .home-product-empty{font-size:6px}
