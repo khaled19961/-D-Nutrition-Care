@@ -9,7 +9,7 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
           <Link href="/more#location">اختر العنوان</Link>
           <span>رعاية غذائية أونلاين</span>
           <span>احجز استشارتك مع أخصائي التغذية المناسب لك</span>
-          <Link href="/auth/login">تسجيل الدخول</Link>
+          <Link href="/auth/login">حسابي</Link>
         </div>
       </div>
       <div className="moving-strip"><div className="moving-strip-track"><span>رعاية غذائية أونلاين</span><span>اختر الأخصائي والخدمة والموعد</span><span>ابدأ حجزك من المنصة</span><span>رعاية غذائية أونلاين</span><span>اختر الأخصائي والخدمة والموعد</span><span>ابدأ حجزك من المنصة</span></div></div>
@@ -21,7 +21,6 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
           </Link>
           <MainNav />
           <div className="header-actions">
-            <Link href="/auth/login" className="login-link">حسابي</Link>
             <Link href="/booking" className="primary-btn">احجز استشارتك</Link>
           </div>
         </div>
