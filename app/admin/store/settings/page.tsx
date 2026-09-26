@@ -29,9 +29,31 @@ export default function StoreSettingsPage() {
     ]);
     if(s.error) setError(s.error.message);
     if(b.error) setError(b.error.message);
+
+    if(!b.error){
+      const {data:files}=await supabase.storage.from("site-assets").list("banners",{limit:100,sortBy:{column:"created_at",order:"asc"}});
+      const existing=new Set((b.data??[]).map((x:Banner)=>x.image_url));
+      const missing=(files??[]).filter(x=>x.name && !x.name.endsWith("/")).filter(x=>{
+        const {data}=supabase.storage.from("site-assets").getPublicUrl(`banners/${x.name}`);
+        return !existing.has(data.publicUrl);
+      });
+      if(missing.length){
+        const start=(b.data??[]).reduce((max: number,x:Banner)=>Math.max(max,x.sort_order),-1)+1;
+        for(const [index,x] of missing.entries()){
+          const {data}=supabase.storage.from("site-assets").getPublicUrl(`banners/${x.name}`);
+          await supabase.from("site_banners").insert({
+            image_url:data.publicUrl,alt_ar:"بنر الموقع",title_ar:null,subtitle_ar:null,
+            link_url:null,sort_order:start+index,is_active:true
+          });
+        }
+        const refreshed=await supabase.from("site_banners").select("*").order("sort_order").order("created_at",{ascending:false});
+        if(!refreshed.error) b.data=refreshed.data;
+      }
+    }
     setSettings(Object.fromEntries((s.data??[]).map((x:Setting)=>[x.setting_key,String(x.setting_value??"").replace(/^"|"$/g,"")])));
     setBanners((b.data??[]) as Banner[]);
   }
+
   useEffect(()=>{load()},[]);
 
   async function saveSettings(e:FormEvent){
