@@ -135,7 +135,7 @@ export default function StoreSettingsPage() {
       <div className="section-heading split"><div><span>البنرات الحالية</span><h2>إدارة البنرات</h2></div></div>
       <div className="banner-admin-list">
         {banners.map((item,index)=><article className="banner-admin-item" key={item.id}>
-          <img src={item.image_url} alt={item.alt_ar}/>
+          <img src={item.image_url} alt={item.alt_ar} loading="lazy" decoding="async"/>
           <div className="banner-admin-fields">
             <input value={item.title_ar??""} placeholder="عنوان" onChange={e=>updateBanner(item.id,{title_ar:e.target.value})}/>
             <input value={item.subtitle_ar??""} placeholder="وصف" onChange={e=>updateBanner(item.id,{subtitle_ar:e.target.value})}/>
