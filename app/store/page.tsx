@@ -8,12 +8,14 @@ export default async function StorePage({ searchParams }: { searchParams: Promis
   const params = await searchParams;
   const supabase = await createSupabaseServerClient();
   const categoryId = params.category ? (await supabase.from("store_categories").select("id").eq("slug", params.category).eq("is_active", true).maybeSingle()).data?.id : null;\n  const brandId = params.brand ? (await supabase.from("store_brands").select("id").eq("slug", params.brand).eq("is_active", true).maybeSingle()).data?.id : null;
+  const categoryId = params.category ? (await supabase.from("store_categories").select("id").eq("slug", params.category).eq("is_active", true).maybeSingle()).data?.id : null;
+  const categoryProductIds = categoryId ? (await supabase.from("store_product_categories").select("product_id").eq("category_id", categoryId)).data?.map((x) => x.product_id) : null;
   const { data: products, error } = await supabase
     .from("store_products")
     .select("id,name_ar,slug,description_ar,price,compare_at_price,currency,stock_quantity,is_featured,is_new,store_product_images(image_url,alt_ar,sort_order)")
     .eq("is_active", true)
     .gt("stock_quantity", 0)
-    .eq(brandId ? "brand_id" : "id", brandId || "00000000-0000-0000-0000-000000000000")
+    .eq(brandId ? "brand_id" : "id", brandId || "00000000-0000-0000-0000-000000000000")\n    .in("id", categoryProductIds ?? ["00000000-0000-0000-0000-000000000000"])
     .order("is_featured", { ascending: false })
     .order("created_at", { ascending: false })
     .limit(24);
