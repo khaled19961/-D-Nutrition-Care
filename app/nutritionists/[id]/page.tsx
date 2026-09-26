@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { SiteChrome } from "@/components/site-chrome";
 
 export const revalidate = 60;
 
