@@ -99,5 +99,6 @@ export default function RegisterPage() {
         </section>
       </div>
     </main>
+    </SiteChrome>
   );
 }
