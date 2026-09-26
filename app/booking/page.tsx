@@ -62,12 +62,14 @@ export default function BookingPage() {
     const selected = services.find((item) => item.id === serviceId);
     if (!selected) return;
 
+    const nutritionistId = selected.nutritionist_id;
+
     async function loadSlots() {
       setLoadingSlots(true);
       const { data, error } = await supabase
         .from("availability_slots")
         .select("id,starts_at,ends_at")
-        .eq("nutritionist_id", selected.nutritionist_id)
+        .eq("nutritionist_id", nutritionistId)
         .eq("status", "open")
         .gt("starts_at", new Date().toISOString())
         .order("starts_at", { ascending: true })
