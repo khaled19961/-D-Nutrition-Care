@@ -1,8 +1,2 @@
-export default function AboutPage() {
-  return (
-    <main className="container py-16">
-      <h1 className="text-4xl font-bold">من نحن</h1>
-      <p className="mt-4 max-w-2xl leading-8 text-slate-600">D-Nutrition-Care منصة رقمية لتنظيم تجربة الاستشارات والبرامج والمتابعة الغذائية.</p>
-    </main>
-  );
-}
+import { SiteChrome } from "@/components/site-chrome";
+export default function AboutPage(){return <SiteChrome><main><section className="page-hero"><div className="container"><span>من نحن</span><h1>D-Nutrition-Care</h1><p>منصة رقمية لتنظيم تجربة الاستشارات والبرامج والمتابعة الغذائية، من اختيار الأخصائي وحتى متابعة المواعيد.</p></div></section></main></SiteChrome>}
