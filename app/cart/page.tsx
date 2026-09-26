@@ -40,7 +40,7 @@ export default function CartPage() {
           <div className="cart-quantity"><button onClick={() => update(item.productId, item.quantity - 1)} disabled={item.quantity <= 1}>−</button><span>{item.quantity}</span><button onClick={() => update(item.productId, item.quantity + 1)}>+</button></div>
           <button className="cart-remove" onClick={() => remove(item.productId)}>إزالة</button>
         </article>)}</div>
-        <aside className="cart-summary"><span>الإجمالي</span><strong>{total.toLocaleString("ar-SA")} {items[0]?.currency || "SAR"}</strong><button className="primary-btn" disabled>متابعة لإتمام الطلب</button><small>سيتم تفعيل إتمام الطلب بعد ربط الدفع والتحقق النهائي من المخزون.</small></aside>
+        <aside className="cart-summary"><span>الإجمالي</span><strong>{total.toLocaleString("ar-SA")} {items[0]?.currency || "SAR"}</strong><Link href="/store/checkout" className="primary-btn">متابعة لإتمام الطلب</Link><small>سيتم التحقق من السعر والمخزون عند إنشاء الطلب.</small></aside>
       </> : <div className="empty-state"><h2>السلة فارغة حالياً</h2><p>أضف منتجاً متاحاً من المتجر ليظهر هنا.</p><Link href="/store" className="primary-btn">تصفح المتجر</Link></div>}
     </div></section>
   </main></SiteChrome>;
