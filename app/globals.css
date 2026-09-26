@@ -63,3 +63,8 @@ section{padding:68px 0}.section-heading{margin-bottom:28px}.section-heading.cent
 @keyframes ticker-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @media (prefers-reduced-motion:reduce){.promo-track,.moving-strip-track{animation:none}.promo-track{width:auto;overflow:auto}.moving-strip-track{width:auto;justify-content:center;flex-wrap:wrap;white-space:normal}}
 @media(max-width:600px){.promo-track{padding:12px 16px}.promo-track a{min-width:270px}.moving-strip-track{gap:24px}.moving-strip-track span::before{margin-left:24px}}
+
+.feature-banner{padding:34px 0}
+.feature-banner-inner{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:30px 34px;border:1px solid var(--border);border-radius:24px;background:#fff}
+.feature-banner h2{margin:7px 0 8px;font-size:clamp(22px,3vw,32px)}.feature-banner p{margin:0;color:var(--muted);line-height:1.8}
+@media(max-width:600px){.feature-banner-inner{align-items:flex-start;flex-direction:column;padding:24px}.feature-banner .primary-btn{width:100%;text-align:center}}
