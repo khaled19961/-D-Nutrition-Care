@@ -110,7 +110,8 @@ export default function BookingPage() {
 
     const { data: claims } = await supabase.auth.getClaims();
     if (!claims?.claims?.sub) {
-      window.location.href = "/auth/login?next=/booking";
+      const next = `${window.location.pathname}${window.location.search}`;
+      window.location.href = `/auth/login?next=${encodeURIComponent(next)}`;
       return;
     }
 
@@ -121,11 +122,16 @@ export default function BookingPage() {
     });
 
     if (error) {
-      setError(
-        error.message.includes("slot_not_available")
-          ? "هذا الموعد لم يعد متاحاً. اختر موعداً آخر."
-          : error.message
-      );
+      const messages: Record<string, string> = {
+        not_authenticated: "يجب تسجيل الدخول أولاً لإتمام الحجز.",
+        patient_account_required: "هذا الحساب لا يملك صلاحية حجز مواعيد.",
+        service_not_available: "الخدمة لم تعد متاحة للحجز.",
+        slot_not_available: "هذا الموعد لم يعد متاحاً. اختر موعداً آخر.",
+        slot_too_short: "مدة الموعد المتاح أقصر من مدة الخدمة.",
+        invalid_slot: "بيانات الموعد غير صالحة. اختر موعداً آخر."
+      };
+      const key = Object.keys(messages).find((item) => error.message.includes(item));
+      setError(key ? messages[key] : "تعذر إتمام الحجز حالياً. حاول مرة أخرى.");
       setPending(false);
       return;
     }
@@ -138,7 +144,7 @@ export default function BookingPage() {
   const selectedService = services.find((item) => item.id === serviceId);
 
   return (
-    <main className="min-h-screen bg-[var(--background)] py-12">
+    <SiteChrome>\n      <main className="min-h-screen bg-[var(--background)] py-12">
       <div className="container max-w-3xl">
         <Link href="/" className="text-sm font-semibold text-[var(--primary)]">← الرئيسية</Link>
         <h1 className="mt-5 text-4xl font-extrabold">حجز استشارة</h1>
@@ -212,6 +218,4 @@ export default function BookingPage() {
           )}
         </section>
       </div>
-    </main>
-  );
-}
+      </main>\n    </SiteChrome>\n  );\n}
