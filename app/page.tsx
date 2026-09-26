@@ -80,6 +80,13 @@ export default function HomePage() {
           <a href="/booking" className="primary-btn large">ابدأ الحجز</a>
         </div>
       </section>
+      <section className="featured-links">
+        <div className="container featured-links-grid">
+          <a href="/nutritionists"><span>01</span><strong>الأخصائيون</strong><small>تصفح الملفات والتخصصات</small></a>
+          <a href="/programs"><span>02</span><strong>البرامج الغذائية</strong><small>البرامج المنشورة في المنصة</small></a>
+          <a href="/articles"><span>03</span><strong>المقالات</strong><small>محتوى غذائي وتثقيفي</small></a>
+        </div>
+      </section>
 
       <section className="quick-categories">
         <div className="container">
