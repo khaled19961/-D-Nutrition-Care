@@ -168,3 +168,85 @@ section{padding:68px 0}.section-heading{margin-bottom:28px}.section-heading.cent
 .admin-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:20px 0}.admin-form input,.admin-form textarea,.admin-form select{width:100%;border:1px solid var(--border);border-radius:10px;background:#fff;padding:11px 12px;font:inherit;font-size:13px}.admin-form textarea{min-height:100px;resize:vertical}.admin-form label{display:grid;gap:7px;font-size:12px;font-weight:700}.admin-toolbar,.admin-actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:16px 0}.admin-panel{background:#fff;border:1px solid var(--border);border-radius:16px;padding:20px}.admin-list{display:grid;gap:14px}.admin-panel h2{margin-top:0}.check-row{display:flex!important;align-items:center;gap:8px;margin-top:8px}.check-row input{width:auto}.form-error{color:#9b2c2c;font-size:12px;margin:12px 0}.page-heading{margin-bottom:24px}.page-heading span{color:var(--primary);font-size:12px;font-weight:800}.page-heading h1{margin:8px 0;font-size:30px}.page-heading p{margin:0;color:var(--muted);line-height:1.8}.admin-form .primary-btn{border:0;cursor:pointer}@media(max-width:600px){.admin-form{grid-template-columns:1fr}.page-heading h1{font-size:25px}}
 
 .cart-count{display:inline-grid;place-items:center;min-width:18px;height:18px;margin-inline-start:5px;padding:0 4px;border-radius:999px;background:var(--primary);color:#fff;font-size:10px;font-weight:800;line-height:1;vertical-align:middle}.mobile-nav .cart-count{margin-inline-start:3px}.desktop-nav a{display:inline-flex;align-items:center;gap:2px}
+
+
+/* Final responsive hardening */
+html,body{width:100%;max-width:100%;overflow-x:hidden}
+*,*::before,*::after{min-width:0}
+img,svg,video,canvas{max-width:100%}
+button,a,input,textarea,select{max-width:100%}
+h1,h2,h3,h4,h5,h6,p,span,a,button,label{overflow-wrap:anywhere}
+.container{width:calc(100% - 36px);max-width:1180px}
+.header-inner,.header-actions,.store-tools-inner,.feature-banner-inner,.directory-toolbar,.section-heading.split{min-width:0}
+.header-actions{flex-wrap:wrap}
+.dashboard-content,.dashboard-page,.dashboard-panel,.dashboard-main-grid>*{min-width:0}
+.horizontal-rail{max-width:100%;overscroll-behavior-x:contain}
+.horizontal-rail>*{min-width:0}
+.section-nav-inner{min-width:0;max-width:100%}
+.site-search,.header-search{min-width:0}
+.site-search input,.header-search input{min-width:0}
+.product-card,.nutritionist-card,.service-card,.category-card,.more-card,.content-card,.storefront-card,.dashboard-panel,.admin-panel{min-width:0;max-width:100%}
+
+@media(max-width:1100px){
+  .desktop-nav{display:none}
+  .header-inner{gap:14px}
+  .header-actions{margin-inline-start:auto}
+  .header-search{width:180px}
+  .dashboard-main-grid{grid-template-columns:minmax(0,1.4fr) minmax(260px,1fr)}
+}
+
+@media(max-width:900px){
+  .header-search{display:none}
+  .header-actions .primary-btn{white-space:normal}
+  .store-tools-inner{flex-wrap:wrap;padding-block:8px}
+  .store-tools-inner .site-search{order:3;flex-basis:100%}
+  .dashboard-page{width:100%;max-width:100%;}
+  .dashboard-main-grid{grid-template-columns:1fr}
+  .health-weight-layout,.cart-layout,.product-detail,.profile-layout{grid-template-columns:1fr}
+  .product-detail-info{min-width:0}
+  .admin-form{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
+@media(max-width:700px){
+  .container{width:calc(100% - 24px)}
+  section{padding:44px 0}
+  .header-inner{min-height:62px}
+  .header-actions{gap:8px}
+  .header-actions .primary-btn{padding:9px 10px;font-size:11px}
+  .brand{min-width:0}
+  .brand strong{font-size:15px}
+  .section-nav-inner{gap:18px}
+  .section-nav a{flex:0 0 auto}
+  .store-tools-inner{align-items:stretch}
+  .store-tools-inner>a{flex:0 0 auto}
+  .site-search{width:100%;max-width:none}
+  .directory-toolbar{flex-direction:column;align-items:stretch}
+  .directory-toolbar .site-search{width:100%;max-width:none}
+  .profile-service{min-width:0}
+  .profile-service-side{white-space:normal}
+  .cart-row{min-width:0}
+  .feature-banner-inner{min-width:0}
+  .dashboard-page{padding-inline:12px}
+  .dashboard-page-head,.dashboard-panel-head{min-width:0}
+  .dashboard-list-row{min-width:0}
+}
+
+@media(max-width:480px){
+  .container{width:calc(100% - 20px)}
+  .hero h1{font-size:34px;letter-spacing:-.8px}
+  .hero p{font-size:14px}
+  .hero-actions{flex-direction:column;align-items:stretch}
+  .hero-actions .primary-btn,.hero-actions .secondary-btn{width:100%}
+  .section-heading h2{font-size:24px}
+  .category-grid,.services-grid,.steps,.more-grid,.nutritionist-grid,.product-grid,.catalog-grid{grid-template-columns:1fr}
+  .footer-grid{grid-template-columns:1fr}
+  .footer-grid>div:first-child{grid-column:auto}
+  .footer-bottom{font-size:10px}
+  .cart-row{grid-template-columns:52px minmax(0,1fr);gap:10px}
+  .cart-row img,.cart-image-empty{width:52px;height:52px}
+  .cart-quantity{grid-column:2;justify-self:start}
+  .cart-remove{grid-column:2;text-align:right}
+  .product-gallery{grid-template-columns:1fr}
+  .product-detail-info{padding:20px}
+  .admin-form{grid-template-columns:1fr}
+}
