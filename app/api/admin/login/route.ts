@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
+import { getSupabaseKey, getSupabaseUrl } from "@/lib/supabase/config";
 
 export const dynamic = "force-dynamic";
 
@@ -25,12 +26,13 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseKey =
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  let supabaseUrl: string;
+  let supabaseKey: string;
 
-  if (!supabaseUrl || !supabaseKey) {
+  try {
+    supabaseUrl = getSupabaseUrl();
+    supabaseKey = getSupabaseKey();
+  } catch {
     return NextResponse.json(
       { error: "إعدادات Supabase غير موجودة في بيئة التشغيل." },
       { status: 500 }
