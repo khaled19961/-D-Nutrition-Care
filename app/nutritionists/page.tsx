@@ -18,13 +18,15 @@ export default async function NutritionistsPage({ searchParams }: { searchParams
   }> | null;
 
   return (
-    <SiteChrome>\n      <main className="container py-14">
+    <SiteChrome>
+      <main className="container py-14">
       <div className="max-w-2xl">
         <h1 className="text-4xl font-extrabold">أخصائيو التغذية</h1>
         <p className="mt-4 leading-8 text-[var(--muted)]">تعرّف على الأخصائيين المتاحين واختر الخدمة والموعد المناسبين لك.</p>
       </div>
 
-      <form action="/nutritionists" method="get" className="site-search" style={{ marginTop: "24px", marginBottom: "24px" }}><input name="q" defaultValue={q} placeholder="ابحث باسم الأخصائي" aria-label="بحث" /><button type="submit">بحث</button></form>\n      {error ? (
+      <form action="/nutritionists" method="get" className="site-search" style={{ marginTop: "24px", marginBottom: "24px" }}><input name="q" defaultValue={q} placeholder="ابحث باسم الأخصائي" aria-label="بحث" /><button type="submit">بحث</button></form>
+      {error ? (
         <div className="mt-8 rounded-2xl bg-red-50 p-5 text-red-700">تعذر تحميل الأخصائيين حالياً.</div>
       ) : data?.length ? (
         <div className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
