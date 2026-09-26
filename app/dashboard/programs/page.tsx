@@ -1,4 +1,6 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import Link from "next/link";
+import { SiteChrome } from "@/components/site-chrome";
 
 export const dynamic = "force-dynamic";
 
@@ -10,7 +12,7 @@ export default async function DashboardProgramsPage() {
     .order("start_date", { ascending: false });
 
   return (
-    <main className="container py-10">
+    <SiteChrome><main className="container py-10">
       <h1 className="text-3xl font-extrabold">برامجي الغذائية</h1>
       <p className="mt-2 text-[var(--muted)]">البرامج المرتبطة بحسابك وحالتها الحالية.</p>
       <div className="mt-8 space-y-4">
