@@ -4,7 +4,8 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export const revalidate = 60;
 
-export default async function StorePage() {
+export default async function StorePage({ searchParams }: { searchParams: Promise<{ brand?: string }> }) {
+  const params = await searchParams;
   const supabase = await createSupabaseServerClient();
   const { data: products, error } = await supabase
     .from("store_products")
@@ -15,13 +16,22 @@ export default async function StorePage() {
     .order("created_at", { ascending: false })
     .limit(24);
 
+  let visibleProducts = products;
+  if (params.brand && products?.length) {
+    const { data: brand } = await supabase.from("store_brands").select("id").eq("slug", params.brand).eq("is_active", true).maybeSingle();
+    if (brand) {
+      const { data: links } = await supabase.from("store_products").select("id").eq("brand_id", brand.id).eq("is_active", true).gt("stock_quantity", 0);
+      const ids = new Set((links ?? []).map((p) => p.id));
+      visibleProducts = products.filter((p) => ids.has(p.id));
+    } else visibleProducts = [];
+  }
   return (
     <SiteChrome>
       <main>
         <section className="page-hero"><div className="container"><span>المتجر</span><h1>منتجات التغذية والعناية</h1><p>تظهر هنا المنتجات المنشورة والمتوفرة فعلياً في الكتالوج.</p></div></section>
         <section className="storefront-section"><div className="container">
           {error ? <div className="empty-state"><h2>تعذر تحميل المنتجات</h2><p>حاول تحديث الصفحة مرة أخرى.</p></div> :
-          products?.length ? <div className="product-grid">{products.map((product) => {
+          visibleProducts?.length ? <div className="product-grid">{visibleProducts.map((product) => {
             const image = [...(product.store_product_images ?? [])].sort((a,b)=>(a.sort_order ?? 0)-(b.sort_order ?? 0))[0];
             const discount = product.compare_at_price && product.compare_at_price > product.price ? Math.round((1 - product.price / product.compare_at_price) * 100) : null;
             return <article className="product-card" key={product.id}>
