@@ -22,7 +22,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             <Link href="/admin/nutritionists">الأخصائيون</Link>
             <Link href="/admin/articles">المقالات</Link>
             <Link href="/admin/reviews">التقييمات</Link>
-            <Link href="/admin/payments">المدفوعات</Link>\n            <Link href="/admin/store">المتجر</Link>
+            <Link href="/admin/payments">المدفوعات</Link>
+            <Link href="/admin/store">المتجر</Link>
           </nav>
           <Link href="/" className="text-sm font-semibold">الموقع العام</Link>
         </div>
