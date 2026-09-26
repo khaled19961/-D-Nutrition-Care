@@ -98,7 +98,6 @@ export default async function HomePage() {
   ]));
 
   const activeBanners = (banners ?? []) as Banner[];
-  const firstBanner = activeBanners[0];
 
   return (
     <SiteChrome>
