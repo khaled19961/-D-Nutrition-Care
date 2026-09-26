@@ -21,7 +21,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
             <Link href="/dashboard">الرئيسية</Link>
             <Link href="/dashboard/appointments">المواعيد</Link>
             <Link href="/dashboard/programs">البرامج</Link>
-            <Link href="/dashboard/progress">التقدم</Link>
+            <Link href="/dashboard/progress">التقدم</Link><Link href="/dashboard/goals">الأهداف</Link>
             <Link href="/dashboard/profile">الملف الشخصي</Link>
           </nav>
           <Link href="/booking" className="rounded-xl bg-[var(--primary)] px-4 py-2 text-sm font-bold text-white">حجز جديد</Link>
