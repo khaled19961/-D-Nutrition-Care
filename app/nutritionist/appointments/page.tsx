@@ -8,19 +8,23 @@ export default async function NutritionistAppointmentsPage() {
   const userId = claims!.claims.sub as string;
   const { data: nutritionist } = await supabase.from("nutritionists").select("id").eq("profile_id", userId).single();
 
-  const { data: appointments } = nutritionist ? await supabase
-    .from("appointments")
-    .select("id,starts_at,ends_at,status,booking_notes,profiles!appointments_patient_id_fkey(full_name,phone)")
-    .eq("nutritionist_id", nutritionist.id)
-    .order("starts_at", { ascending: false })
-    .limit(50) : { data: [] };
+  const { data: appointments } = nutritionist
+    ? await supabase.from("appointments").select("id,patient_id,starts_at,ends_at,status,booking_notes").eq("nutritionist_id", nutritionist.id).order("starts_at", { ascending: false }).limit(50)
+    : { data: [] };
+
+  const patientIds = [...new Set((appointments ?? []).map((item) => item.patient_id))];
+  const { data: patients } = patientIds.length
+    ? await supabase.from("profiles").select("id,full_name,phone").in("id", patientIds)
+    : { data: [] };
+
+  const patientMap = new Map((patients ?? []).map((patient) => [patient.id, patient]));
 
   return (
     <main className="container py-10">
       <h1 className="text-3xl font-extrabold">حجوزات المرضى</h1>
       <div className="mt-8 space-y-3">
-        {appointments?.length ? appointments.map((item: any) => {
-          const patient = Array.isArray(item.profiles) ? item.profiles[0] : item.profiles;
+        {appointments?.length ? appointments.map((item) => {
+          const patient = patientMap.get(item.patient_id);
           return <article key={item.id} className="rounded-3xl border border-[var(--border)] bg-white p-5">
             <div className="flex flex-wrap justify-between gap-4">
               <div><h2 className="font-bold">{patient?.full_name || "مريض"}</h2><p className="mt-1 text-sm text-[var(--muted)]">{patient?.phone || ""}</p></div>
