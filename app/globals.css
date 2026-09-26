@@ -420,7 +420,7 @@ h1,h2,h3,h4,h5,h6,p,span,a,button,label{overflow-wrap:anywhere}
 
 
 /* Main hero: two equal fixed tiles on the left + animated banner rail on the right */
-.home-hero-layout{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;direction:ltr;align-items:stretch;transform:scale(.75);transform-origin:top center;margin-bottom:-25%}
+.home-hero-layout{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;direction:ltr;align-items:stretch;transform:scale(.5625);transform-origin:top center;justify-self:center;margin-bottom:-43.75%}
 .home-hero-fixed{display:grid;grid-column:1 / span 2;grid-template-columns:1fr;grid-template-rows:repeat(2,minmax(0,1fr));gap:12px;direction:ltr;min-width:0}
 .home-hero-fixed-banner,.home-hero-slide{display:block;position:relative;overflow:hidden;border-radius:10px;background:#eef3e9;min-width:0}
 .home-hero-fixed-banner{aspect-ratio:auto;min-height:0}
