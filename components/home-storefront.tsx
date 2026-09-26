@@ -25,6 +25,13 @@ type Category = {
   icon: "dumbbell" | "food" | "wellness" | "weight" | "beauty" | "sport";
 };
 
+type ProductSection = {
+  key: string;
+  title: string;
+  products: Product[];
+  href?: string;
+};
+
 const categoryIcons: Record<Category["icon"], React.ReactNode> = {
   dumbbell: <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6M7 7v10M17 7v10M20 9v6M7 12h10" /></svg>,
   food: <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4v7M8 4v7M6.5 11v9M18 4c-3 2-4 4-4 7h3v9M17 11h3" /></svg>,
@@ -38,10 +45,12 @@ export function HomeStorefront({
   products,
   beautyProducts,
   categories,
+  productSections,
 }: {
   products: Product[];
   beautyProducts: Product[];
   categories: Category[];
+  productSections: Record<string, Product[]>;
 }) {
   const [favorites, setFavorites] = useState<string[]>([]);
   const [added, setAdded] = useState<string | null>(null);
@@ -121,6 +130,20 @@ export function HomeStorefront({
     return <div className="home-product-rail">{items.map((product) => <ProductCard key={product.id} product={product} />)}</div>;
   }
 
+  function RequestedSection({ title, items, href = "/store" }: { title: string; items: Product[]; href?: string }) {
+    return (
+      <section className="home-store-section home-requested-section">
+        <div className="container">
+          <div className="home-store-heading">
+            <h2>{title}</h2>
+            <Link href={href}>عرض الكل ←</Link>
+          </div>
+          <ProductRail items={items} emptyLabel="ستظهر المنتجات هنا بعد نشر المنتجات وربطها بالقسم من لوحة الإدارة." />
+        </div>
+      </section>
+    );
+  }
+
   return (
     <>
       <section className="home-category-icons">
@@ -152,7 +175,7 @@ export function HomeStorefront({
 
       <section className="home-store-section home-beauty-section">
         <div className="container">
-          <div className="home-store-heading"><h2>الأفضل مبيعًا! - الجمال والعناية</h2><Link href="/beauty">عرض الكل ←</Link></div>
+          <div className="home-store-heading"><h2>الأفضل مبيعًا! - الجمال والعناية</h2><Link href="/store?category=beauty">عرض الكل ←</Link></div>
           <ProductRail items={beautyProducts} emptyLabel="ستظهر منتجات الجمال والعناية هنا بعد نشرها من لوحة الإدارة." />
         </div>
       </section>
@@ -180,6 +203,18 @@ export function HomeStorefront({
           </div>
         </div>
       </section>
+
+      <div className="home-requested-sections">
+        <RequestedSection title="الكومبوهات الأكثر مبيعًا!!" items={productSections.combos ?? []} href="/store?category=best-selling-combos" />
+        <RequestedSection title="امباور نيوتريشن" items={productSections.empower ?? []} href="/store?brand=empower-nutrition" />
+        <RequestedSection title="اكثر المنتجات مبيعا!! - قبل التمرين" items={productSections["pre-workout"] ?? []} href="/store?category=pre-workout" />
+        <RequestedSection title="اكثر المنتجات مبيعا!! - فيتامين" items={productSections.vitamins ?? []} href="/store?category=vitamins" />
+        <RequestedSection title="اكثر المنتجات مبيعا!! - البروتينات" items={productSections.proteins ?? []} href="/store?category=proteins" />
+        <RequestedSection title="اكثر المنتجات مبيعا!! - الأحماض الأمينية" items={productSections["amino-acids"] ?? []} href="/store?category=amino-acids" />
+        <RequestedSection title="اكثر المنتجات مبيعا!! - سناك بروتين" items={productSections["protein-snacks"] ?? []} href="/store?category=protein-snacks" />
+        <RequestedSection title="اكثر المنتجات مبيعا!! - معدات رياضية" items={productSections["sports-equipment"] ?? []} href="/store?category=sports-equipment" />
+        <RequestedSection title="منتجات مميزة" items={productSections.featured ?? []} href="/store?featured=true" />
+      </div>
     </>
   );
 }
