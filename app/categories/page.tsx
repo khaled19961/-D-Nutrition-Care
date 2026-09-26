@@ -13,7 +13,7 @@ const categories = [
 ];
 
 export default function CategoriesPage() {
-  return <SiteChrome><main>
+  return <SiteChrome><main><section className="moving-strip"><div className="moving-strip-track"><span>اختر المجال المناسب لاحتياجك</span><span>انتقل مباشرة إلى الأخصائي والحجز</span><span>خدمات غذائية أونلاين</span><span>اختر المجال المناسب لاحتياجك</span><span>انتقل مباشرة إلى الأخصائي والحجز</span><span>خدمات غذائية أونلاين</span></div></section>
     <section className="page-hero"><div className="container"><span>الفئات</span><h1>اختر مجال الرعاية الغذائية الذي يناسبك</h1><p>تصفح الخدمات حسب الهدف أو الاحتياج ثم انتقل مباشرة إلى الأخصائي والحجز.</p></div></section>
     <section><div className="container"><div className="category-grid">
       {categories.map(([title,text]) => <Link href={title === "الأخصائيون" ? "/nutritionists" : "/booking"} className="category-card" key={title}><div><h3>{title}</h3><p>{text}</p></div><span className="arrow">←</span></Link>)}
