@@ -13,7 +13,7 @@ export async function updateSession(request: NextRequest) {
         getAll() {
           return request.cookies.getAll();
         },
-        setAll(cookiesToSet, headers) {
+        setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value, options }) => {
             request.cookies.set(name, value);
           });
@@ -23,18 +23,11 @@ export async function updateSession(request: NextRequest) {
           cookiesToSet.forEach(({ name, value, options }) => {
             supabaseResponse.cookies.set(name, value, options);
           });
-
-          if (headers) {
-            headers.forEach(([name, value]) => {
-              supabaseResponse.headers.set(name, value);
-            });
-          }
         }
       }
     }
   );
 
-  // getClaims verifies the token instead of trusting the session cookie.
   await supabase.auth.getClaims();
 
   return supabaseResponse;
