@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { MainNav, MobileNav } from "@/components/navigation";
 
 export function SiteChrome({ children }: { children: React.ReactNode }) {
   return (
@@ -17,14 +18,7 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
             <span className="brand-mark">D</span>
             <span><strong>D-Nutrition</strong><small>CARE</small></span>
           </Link>
-          <nav className="desktop-nav" aria-label="التنقل الرئيسي">
-            <Link href="/">الرئيسية</Link>
-            <Link href="/categories">الفئات</Link>
-            <Link href="/offers">العروض</Link>
-            <Link href="/nutritionists">الأخصائيون</Link>
-            <Link href="/articles">المقالات</Link>
-            <Link href="/more">المزيد</Link>
-          </nav>
+          <MainNav />
           <div className="header-actions">
             <Link href="/auth/login" className="login-link">حسابي</Link>
             <Link href="/booking" className="primary-btn">احجز استشارتك</Link>
@@ -44,7 +38,7 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
         </div>
         <div className="container footer-bottom"><span>© D-Nutrition-Care</span><span>رعاية غذائية تبدأ من احتياجك</span></div>
       </footer>
-      <nav className="mobile-nav" aria-label="التنقل للجوال"><Link href="/" className="active"><small>الرئيسية</small></Link><Link href="/categories"><small>الفئات</small></Link><Link href="/offers"><small>العروض</small></Link><Link href="/cart"><small>السلة</small></Link><Link href="/more"><small>المزيد</small></Link></nav>
+      <MobileNav />
     </div>
   );
 }
