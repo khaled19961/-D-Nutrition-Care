@@ -8,11 +8,11 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
         <div className="container top-strip-inner">
           <Link href="/more#location">اختر العنوان</Link>
           <span>رعاية غذائية أونلاين</span>
-          <span>احجز استشارتك مع أخصائي التغذية المناسب لك</span>
+          <span>استشارات وخطط غذائية ومتابعة</span>
           <Link href="/auth/login">حسابي</Link>
         </div>
       </div>
-      <div className="moving-strip"><div className="moving-strip-track"><span>رعاية غذائية أونلاين</span><span>اختر الأخصائي والخدمة والموعد</span><span>ابدأ حجزك من المنصة</span><span>رعاية غذائية أونلاين</span><span>اختر الأخصائي والخدمة والموعد</span><span>ابدأ حجزك من المنصة</span></div></div>
+      <div className="moving-strip"><div className="moving-strip-track"><span>استشارات غذائية</span><span>خطط غذائية شخصية</span><span>متابعة غذائية مستمرة</span><span>محتوى غذائي موثوق</span><span>استشارات غذائية</span><span>خطط غذائية شخصية</span><span>متابعة غذائية مستمرة</span><span>محتوى غذائي موثوق</span></div></div>
       <header className="main-header">
         <div className="container header-inner">
           <Link href="/" className="brand" aria-label="D-Nutrition-Care">
