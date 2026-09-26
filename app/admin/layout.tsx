@@ -7,10 +7,18 @@ export const dynamic = "force-dynamic";
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createSupabaseServerClient();
   const { data: claims } = await supabase.auth.getClaims();
-  if (!claims?.claims?.sub) redirect("/auth/login?next=/admin");
 
-  const { data: profile } = await supabase.from("profiles").select("role").eq("id", claims.claims.sub).maybeSingle();
-  if (!profile || !["admin", "super_admin"].includes(profile.role)) redirect("/dashboard");
+  if (!claims?.claims?.sub) redirect("/admin-login");
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role,is_active")
+    .eq("id", claims.claims.sub)
+    .maybeSingle();
+
+  if (!profile || !profile.is_active || !["admin", "super_admin"].includes(profile.role)) {
+    redirect("/admin-login");
+  }
 
   return (
     <div className="min-h-screen bg-[var(--background)]">
