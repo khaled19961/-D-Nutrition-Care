@@ -1,14 +1,5 @@
-import { SiteChrome } from "@/components/site-chrome";
-import { CatalogEmpty } from "@/components/catalog-empty";
-
-export default function BeautyPage() {
-  return (
-    <SiteChrome>
-      <CatalogEmpty
-        eyebrow="العناية"
-        title="عناية وجمال"
-        description="تعرض الصفحة أقسام ومنتجات العناية المسجلة في كتالوج المتجر، دون إضافة معلومات أو وعود غير موجودة في البيانات."
-      />
-    </SiteChrome>
-  );
-}
+import Link from "next/link";
+import {SiteChrome} from "@/components/site-chrome";
+import {createSupabaseServerClient} from "@/lib/supabase/server";
+export const revalidate=60;
+export default async function Beauty(){const s=await createSupabaseServerClient();const {data:cats,error}=await s.from("store_categories").select("id,name_ar,slug,description_ar").eq("is_active",true).or("slug.ilike.%beauty%,slug.ilike.%care%,name_ar.ilike.%عناية%,name_ar.ilike.%جمال%").order("sort_order");return <SiteChrome><main><section className="page-hero"><div className="container"><span>العناية</span><h1>عناية وجمال</h1><p>أقسام العناية والجمال المنشورة فعلياً في كتالوج المتجر.</p></div></section><section className="storefront-section"><div className="container">{error?<div className="empty-state"><h2>تعذر تحميل أقسام العناية</h2></div>:cats?.length?<div className="category-grid">{cats.map(c=><Link href={`/store?category=${c.slug}`} className="category-card" key={c.id}><div><h3>{c.name_ar}</h3>{c.description_ar&&<p>{c.description_ar}</p>}</div><span className="arrow">←</span></Link>)}</div>:<div className="empty-state"><h2>لا توجد أقسام عناية منشورة</h2></div>}</div></section></main></SiteChrome>}
