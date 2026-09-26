@@ -71,6 +71,7 @@ export default async function DashboardPage() {
         </section>
       </div>
     </main>
+    </SiteChrome>
   );
 }
 
