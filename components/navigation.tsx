@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 const items = [
   ["/", "الرئيسية"],
   ["/nutritionists", "الأخصائيون"],
-  ["/admin-login", "الإدارة"],
+  ["/admin", "الإدارة"],
   ["/cart", "السلة"],
   ["/more", "المزيد"],
 ] as const;
