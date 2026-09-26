@@ -51,5 +51,6 @@ export default async function NutritionistsPage({ searchParams }: { searchParams
         <div className="mt-10 rounded-3xl border border-[var(--border)] bg-white p-8 text-center text-[var(--muted)]">لا يوجد أخصائيون متاحون حالياً.</div>
       )}
     </main>
+    </SiteChrome>
   );
 }
