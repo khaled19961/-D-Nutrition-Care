@@ -3,6 +3,7 @@
 import { FormEvent, useState } from "react";
 import Link from "next/link";
 import { createSupabaseBrowserClient } from "@/lib/supabase/browser";
+import { SiteChrome } from "@/components/site-chrome";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -28,7 +29,7 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[var(--background)] py-12">
+    <SiteChrome><main className="min-h-screen bg-[var(--background)] py-12">
       <div className="container flex min-h-[80vh] items-center justify-center">
         <section className="w-full max-w-md rounded-3xl border border-[var(--border)] bg-white p-8 shadow-sm">
           <Link href="/auth/login" className="text-sm font-semibold text-[var(--primary)]">← العودة لتسجيل الدخول</Link>
