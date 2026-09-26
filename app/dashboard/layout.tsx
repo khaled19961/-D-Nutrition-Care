@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { SiteChrome } from "@/components/site-chrome";
@@ -14,7 +13,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
   }
 
   return (
-    <div className="min-h-screen bg-[var(--background)]">
+    <SiteChrome>
+      <div className="min-h-screen bg-[var(--background)]">
       <header className="border-b border-[var(--border)] bg-white">
         <div className="container flex min-h-16 flex-wrap items-center justify-between gap-4">
           <Link href="/dashboard" className="font-extrabold text-[var(--primary)]">D-Nutrition-Care</Link>
@@ -29,6 +29,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         </div>
       </header>
       {children}
-    </div>
+      </div>
+    </SiteChrome>
   );
 }
