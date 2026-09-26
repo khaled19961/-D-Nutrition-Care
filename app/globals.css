@@ -1,6 +1,16 @@
 @import "tailwindcss";
 
 :root{--background:#f7f7f5;--foreground:#18231f;--primary:#167c63;--primary-dark:#0f5d4b;--mint:#e8f3ee;--card:#fff;--muted:#6b746f;--border:#e1e5e2}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--background);color:var(--foreground);font-family:Arial,Helvetica,sans-serif;overflow-x:hidden}img,video{max-width:100%;height:auto}a{color:inherit;text-decoration:none}button,input,textarea,select{font:inherit}.container{width:min(1180px,calc(100% - 36px));margin-inline:auto}
+@media(max-width:1100px){.container{width:min(100% - 32px,1180px)}}
+@media(max-width:600px){.container{width:min(100% - 24px,1180px)}}
+
+/* Responsive global safety */
+table{width:100%;max-width:100%;display:block;overflow-x:auto}pre{max-width:100%;overflow:auto}input,textarea,select{max-width:100%}.main-header,.hero,.store-tools,.section-nav,.footer,.dashboard-shell,.site-shell{max-width:100vw}
+
+/* Preserve the existing site design below */
+
+:root{--background:#f7f7f5;--foreground:#18231f;--primary:#167c63;--primary-dark:#0f5d4b;--mint:#e8f3ee;--card:#fff;--muted:#6b746f;--border:#e1e5e2}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--background);color:var(--foreground);font-family:Arial,Helvetica,sans-serif}a{color:inherit;text-decoration:none}button,input,textarea,select{font:inherit}.container{width:min(1180px,calc(100% - 36px));margin-inline:auto}
 
 .top-strip{background:#173b33;color:#fff;font-size:12px}.top-strip-inner{height:38px;display:flex;align-items:center;gap:28px}.top-strip-inner a{margin-inline-start:auto;color:#d7eee5}
