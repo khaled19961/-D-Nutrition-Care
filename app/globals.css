@@ -276,3 +276,49 @@ h1,h2,h3,h4,h5,h6,p,span,a,button,label{overflow-wrap:anywhere}
 @media(max-width:900px){.hero-banner-carousel{aspect-ratio:16/8;min-height:200px}.admin-settings-grid{grid-template-columns:1fr}.banner-admin-item{grid-template-columns:1fr}}
 @media(max-width:600px){.hero-banner-carousel{aspect-ratio:4/3;min-height:210px}.hero-banner-overlay{padding:22px;background:linear-gradient(90deg,rgba(15,93,75,.78),rgba(15,93,75,.1))}.hero-banner-overlay h1{font-size:28px}.hero-banner-overlay p{font-size:13px;max-width:85%}}
 @media(prefers-reduced-motion:reduce){.hero-banner-slide{animation:none;transform:translateX(0);opacity:1}.hero-banner-slide:not(:first-child){display:none}}
+
+
+/* Video-reference storefront layout */
+.top-strip{height:34px;background:#8db52a;color:#fff;overflow:hidden;border:0}
+.top-strip .moving-strip-track{height:34px;padding:0;gap:58px;display:flex;align-items:center;width:max-content;white-space:nowrap;animation:ticker-scroll 24s linear infinite}
+.top-strip .moving-strip-track span{font-size:11px;font-weight:800}
+.quick-header-links{background:#f5f8e8;border-bottom:1px solid #e2e8d2}
+.quick-header-links-inner{min-height:58px;display:flex;align-items:center;justify-content:center;gap:10px;overflow-x:auto;scrollbar-width:none}
+.quick-header-links-inner::-webkit-scrollbar{display:none}
+.quick-header-links-inner a{background:#fff;border:1px solid #e4e8d8;border-radius:8px;padding:10px 24px;min-width:130px;text-align:center;font-size:12px;font-weight:800;white-space:nowrap;box-shadow:0 2px 8px rgba(40,60,20,.04)}
+.quick-header-links-inner a:hover{border-color:#a9c84b;color:#6e9513}
+.main-header{position:relative;background:#fff;border-bottom:0;box-shadow:0 2px 12px rgba(30,50,20,.04)}
+.header-inner{min-height:82px;gap:26px}
+.brand{order:3}.header-actions{order:2;flex:1;justify-content:center}.desktop-nav{order:1}
+.brand strong{font-size:24px;color:#4f7410}.brand small{color:#8db52a}.brand-mark{width:48px;height:48px;border-radius:12px;background:#8db52a;font-size:24px}
+.header-search{display:flex;align-items:center;width:min(560px,100%);border:1px solid #dfe5d5;border-radius:28px;overflow:hidden;background:#fafcf6;box-shadow:0 2px 8px rgba(40,60,20,.04)}
+.header-search input{border:0;outline:0;background:transparent;flex:1;min-width:0;padding:13px 18px;font-size:13px;text-align:right}
+.header-search button{border:0;background:#7ea51e;color:#fff;width:48px;height:48px;border-radius:50%;margin:3px;font-size:0;position:relative;cursor:pointer}
+.header-search button:after{content:"⌕";font-size:24px;line-height:1}
+.header-actions .primary-btn{background:#fff;color:#587d13;border:1px solid #dce5c6;border-radius:22px;white-space:nowrap}
+.desktop-nav{gap:18px;font-size:12px}.desktop-nav a{padding:12px 2px;border:0}.desktop-nav a.active,.desktop-nav a:hover{color:#7b9f19;border:0}
+.section-nav{background:#fff;border-top:1px solid #f0f2ed;border-bottom:1px solid #e5e9e1;position:relative;z-index:10}
+.section-nav-inner{min-height:46px;gap:28px;justify-content:center;overflow-x:auto;scrollbar-width:none;white-space:nowrap}
+.section-nav-inner::-webkit-scrollbar{display:none}.section-nav a{font-size:12px;font-weight:700;padding:15px 0;color:#343b35}.section-nav a:hover{color:#7c9f19}
+.hero-storefront{background:#fff;padding:18px 0 8px}
+.hero-mosaic{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2.15fr);gap:12px;direction:ltr}
+.hero-mosaic-side{display:grid;grid-template-rows:1fr 1fr;gap:12px;min-width:0;direction:rtl}
+.hero-mosaic-main,.hero-mosaic-side{min-height:0}.hero-mosaic-large,.hero-mosaic-small{display:block;position:relative;overflow:hidden;border-radius:9px;background:#eef3e9;height:100%;min-height:0}
+.hero-mosaic-large{aspect-ratio:2.05/1}.hero-mosaic-small{aspect-ratio:2.05/1}
+.hero-mosaic img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .35s ease}.hero-mosaic a:hover img{transform:scale(1.02)}
+.hero-mosaic-caption{position:absolute;right:0;left:0;bottom:0;padding:18px 20px;color:#fff;background:linear-gradient(transparent,rgba(0,0,0,.68));display:flex;flex-direction:column;gap:4px;text-align:right}
+.hero-mosaic-caption strong{font-size:clamp(15px,2vw,28px)}.hero-mosaic-caption span{font-size:12px}
+.hero-banner-empty{min-height:420px;border-radius:10px;display:grid;place-items:center;text-align:center;background:linear-gradient(135deg,#eaf4d9,#fff);padding:40px}
+.hero-banner-empty h1{margin:10px 0;font-size:clamp(30px,4vw,52px);color:#42640e}.hero-banner-empty span{color:#83a922;font-weight:900}.hero-banner-empty p{color:#68705e}
+.hero-banner-dots{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:10px}.hero-banner-mini{height:76px;display:block;overflow:hidden;border-radius:8px}.hero-banner-mini img{width:100%;height:100%;object-fit:cover}
+.quick-categories{background:#fff;padding:12px 0 28px;border-bottom:1px solid #edf0e9}
+.quick-categories-track{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+.quick-category{display:flex;flex-direction:column;align-items:center;text-align:center;gap:7px;padding:8px 6px}.quick-category-icon{width:68px;height:68px;border-radius:50%;display:grid;place-items:center;background:#94c62a;color:#fff;font-size:28px;border:6px solid #eff6d9;box-shadow:0 4px 10px rgba(91,120,15,.08)}
+.quick-category strong{font-size:13px}.quick-category small{font-size:10px;color:var(--muted);line-height:1.5;max-width:150px}
+.storefront-section{padding:42px 0}.storefront-tinted{background:#f7f9f3}.section-heading h2{font-size:25px}.section-heading>span{color:#7c9f19}
+.storefront-card,.storefront-service,.content-card,.storefront-nutritionist{border-radius:8px;background:#fff}.horizontal-rail{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(210px,1fr);overflow-x:auto;gap:12px;padding-bottom:8px;scrollbar-width:none}.horizontal-rail::-webkit-scrollbar{display:none}.category-rail{grid-auto-columns:minmax(175px,1fr)}
+.category-card{min-height:150px;padding:20px}.category-card small,.service-card small{color:#7c9f19;font-weight:800}.category-card strong{font-size:17px}.service-card{min-height:180px;padding:22px}.nutritionist-card{border-radius:8px}
+.feature-banner{padding:25px 0}.feature-banner-inner{border-radius:10px;background:#edf6d9;border-color:#dfe9c6}.footer{background:#26361e}
+@media(max-width:1100px){.desktop-nav{display:none}.header-actions{order:1}.brand{order:2}.header-inner{justify-content:space-between}.quick-categories-track{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:800px){.quick-header-links-inner{justify-content:flex-start}.hero-mosaic{grid-template-columns:1fr;direction:rtl}.hero-mosaic-main{order:1}.hero-mosaic-side{order:2;grid-template-columns:1fr 1fr;grid-template-rows:1fr;direction:rtl}.hero-mosaic-large{aspect-ratio:16/8}.hero-mosaic-small{aspect-ratio:16/9}.quick-categories-track{grid-template-columns:repeat(3,1fr)}.quick-category-icon{width:58px;height:58px;font-size:23px}}
+@media(max-width:600px){.top-strip{height:30px}.top-strip .moving-strip-track{height:30px;gap:32px}.top-strip .moving-strip-track span{font-size:9px}.quick-header-links{display:none}.header-inner{min-height:66px}.header-search{display:flex;max-width:none}.header-search input{font-size:11px;padding:10px 12px}.header-search button{width:40px;height:40px}.header-actions .primary-btn{display:none}.brand strong{font-size:16px}.brand-mark{width:38px;height:38px;font-size:19px}.section-nav-inner{justify-content:flex-start;gap:22px}.section-nav a{font-size:10px}.hero-storefront{padding-top:10px}.hero-mosaic{gap:8px}.hero-mosaic-side{gap:8px}.hero-mosaic-caption{padding:10px}.hero-mosaic-caption strong{font-size:14px}.hero-mosaic-caption span{font-size:10px}.hero-banner-dots{grid-template-columns:1fr 1fr 1fr}.hero-banner-mini{height:52px}.quick-categories{padding-top:8px}.quick-categories-track{grid-template-columns:repeat(3,1fr);gap:3px}.quick-category{padding:5px 2px}.quick-category-icon{width:48px;height:48px;border-width:4px;font-size:18px}.quick-category strong{font-size:10px}.quick-category small{display:none}.storefront-section{padding:30px 0}.section-heading{margin-bottom:18px}.section-heading h2{font-size:21px}}
