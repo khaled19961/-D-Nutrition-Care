@@ -1,6 +1,5 @@
-import { SiteChrome } from "@/components/site-chrome";
-import { CatalogEmpty } from "@/components/catalog-empty";
-
-export default function StacksPage() {
-  return <SiteChrome><CatalogEmpty eyebrow="المجموعات" title="ستاك وكومبو" description="تعرض الصفحة مجموعات المنتجات المنشورة ومكوناتها وخيارات التخصيص المتاحة من بيانات المتجر الفعلية." /></SiteChrome>;
-}
+import Link from "next/link";
+import {SiteChrome} from "@/components/site-chrome";
+import {createSupabaseServerClient} from "@/lib/supabase/server";
+export const revalidate=60;
+export default async function Stacks(){const s=await createSupabaseServerClient();const {data,error}=await s.from("store_bundles").select("id,name_ar,slug,description_ar,price,compare_at_price,currency").eq("is_active",true).order("created_at",{ascending:false});return <SiteChrome><main><section className="page-hero"><div className="container"><span>المجموعات</span><h1>ستاك وكومبو</h1><p>المجموعات والباقات المنشورة فعلياً في المتجر.</p></div></section><section className="storefront-section"><div className="container">{error?<div className="empty-state"><h2>تعذر تحميل المجموعات</h2></div>:data?.length?<div className="catalog-grid">{data.map(b=><article className="catalog-card" key={b.id}><strong>{b.name_ar}</strong>{b.description_ar&&<p>{b.description_ar}</p>}<div className="product-price"><strong>{Number(b.price).toLocaleString("ar-SA")} {b.currency}</strong>{b.compare_at_price&&<del>{Number(b.compare_at_price).toLocaleString("ar-SA")} {b.currency}</del>}</div><Link href={`/bundles/${b.slug}`} className="text-link">عرض المجموعة ←</Link></article>)}</div>:<div className="empty-state"><h2>لا توجد مجموعات منشورة</h2></div>}</div></section></main></SiteChrome>}
