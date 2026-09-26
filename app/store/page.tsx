@@ -4,10 +4,10 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export const revalidate = 60;
 
-export default async function StorePage({ searchParams }: { searchParams: Promise<{ brand?: string }> }) {
+export default async function StorePage({ searchParams }: { searchParams: Promise<{ brand?: string; category?: string }> }) {
   const params = await searchParams;
   const supabase = await createSupabaseServerClient();
-  const brandId = params.brand ? (await supabase.from("store_brands").select("id").eq("slug", params.brand).eq("is_active", true).maybeSingle()).data?.id : null;
+  const categoryId = params.category ? (await supabase.from("store_categories").select("id").eq("slug", params.category).eq("is_active", true).maybeSingle()).data?.id : null;\n  const brandId = params.brand ? (await supabase.from("store_brands").select("id").eq("slug", params.brand).eq("is_active", true).maybeSingle()).data?.id : null;
   const { data: products, error } = await supabase
     .from("store_products")
     .select("id,name_ar,slug,description_ar,price,compare_at_price,currency,stock_quantity,is_featured,is_new,store_product_images(image_url,alt_ar,sort_order)")
