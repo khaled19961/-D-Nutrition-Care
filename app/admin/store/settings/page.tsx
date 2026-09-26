@@ -25,18 +25,13 @@ export default function StoreSettingsPage() {
     setError("");
     try {
       const supabase=createSupabaseBrowserClient();
-      const [s,response]=await Promise.all([
+      const [s,b] = await Promise.all([
         supabase.from("site_settings").select("setting_key,setting_value"),
-        fetch("/api/admin/banners",{cache:"no-store"})
+        supabase.from("site_banners").select("*").order("sort_order",{ascending:true}).order("created_at",{ascending:true})
       ]);
-      if(s.error) setError(s.error.message);
-      const result=await response.json().catch(()=>({}));
-      if(!response.ok) {
-        setError(result?.error || "تعذر تحميل البنرات.");
-        setBanners([]);
-      } else {
-        setBanners((result?.banners ?? []) as Banner[]);
-      }
+      if(s.error) throw new Error(s.error.message);
+      if(b.error) throw new Error(b.error.message);
+      setBanners((b.data ?? []) as Banner[]);
       setSettings(Object.fromEntries((s.data??[]).map((x:Setting)=>[x.setting_key,String(x.setting_value??"").replace(/^"|"$/g,"")])));
     } catch {
       setError("تعذر تحميل بيانات البنرات. أعد تحديث الصفحة.");
