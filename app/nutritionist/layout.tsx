@@ -1,32 +1,58 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { SiteChrome } from "@/components/site-chrome";
 
 export const dynamic = "force-dynamic";
+
+const navigation = [
+  ["/nutritionist", "نظرة عامة"],
+  ["/nutritionist/services", "الخدمات"],
+  ["/nutritionist/availability", "المواعيد المتاحة"],
+  ["/nutritionist/appointments", "الحجوزات"],
+] as const;
 
 export default async function NutritionistLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createSupabaseServerClient();
   const { data: claims } = await supabase.auth.getClaims();
   if (!claims?.claims?.sub) redirect("/auth/login?next=/nutritionist");
 
-  const { data: profile } = await supabase.from("profiles").select("role,full_name").eq("id", claims.claims.sub).maybeSingle();
-  if (!profile || !["nutritionist", "admin", "super_admin"].includes(profile.role)) redirect("/dashboard");
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role,full_name")
+    .eq("id", claims.claims.sub)
+    .maybeSingle();
+
+  if (!profile || !["nutritionist", "admin", "super_admin"].includes(profile.role)) {
+    redirect("/dashboard");
+  }
 
   return (
-    <div className="min-h-screen bg-[var(--background)]">
-      <header className="border-b border-[var(--border)] bg-white">
-        <div className="container flex min-h-16 flex-wrap items-center justify-between gap-4">
-          <Link href="/nutritionist" className="font-extrabold text-[var(--primary)]">لوحة الأخصائي</Link>
-          <nav className="flex flex-wrap gap-4 text-sm font-semibold">
-            <Link href="/nutritionist">الرئيسية</Link>
-            <Link href="/nutritionist/services">الخدمات</Link>
-            <Link href="/nutritionist/availability">المواعيد المتاحة</Link>
-            <Link href="/nutritionist/appointments">الحجوزات</Link>
+    <SiteChrome>
+      <div className="dashboard-shell">
+        <aside className="dashboard-sidebar">
+          <div className="dashboard-profile">
+            <span className="dashboard-avatar">{(profile.full_name || "أ").trim().charAt(0)}</span>
+            <div>
+              <strong>{profile.full_name || "الأخصائي"}</strong>
+              <small>لوحة الأخصائي</small>
+            </div>
+          </div>
+
+          <nav className="dashboard-nav" aria-label="إدارة الأخصائي">
+            {navigation.map(([href, label]) => (
+              <Link key={href} href={href}>{label}</Link>
+            ))}
           </nav>
-          <Link href="/" className="text-sm font-semibold">الموقع العام</Link>
-        </div>
-      </header>
-      {children}
-    </div>
+
+          <div className="dashboard-sidebar-footer">
+            <Link href="/dashboard">لوحة المريض</Link>
+            <Link href="/">الموقع العام</Link>
+          </div>
+        </aside>
+
+        <section className="dashboard-content">{children}</section>
+      </div>
+    </SiteChrome>
   );
 }
