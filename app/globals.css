@@ -113,3 +113,25 @@ section{padding:68px 0}.section-heading{margin-bottom:28px}.section-heading.cent
 .storefront-nutritionist{flex-basis:330px;border-radius:18px}.storefront-nutritionist .nutritionist-bio{min-height:54px}
 .content-card{min-height:210px;border-radius:16px}.content-card .program-meta{margin-top:20px}
 @media(max-width:600px){.storefront-section{padding:38px 0}.storefront-hero .hero-content{padding:46px 0 52px}.horizontal-rail{margin-inline:-12px;padding-inline:12px}.horizontal-rail>*{flex-basis:82vw}.category-rail>*{flex-basis:68vw}.storefront-card{min-height:145px}.storefront-feature{padding:18px 0}.storefront-feature .feature-banner-inner{padding:22px}.storefront-nutritionist{flex-basis:84vw}}
+
+/* Header search and storefront section navigation */
+.header-search{display:flex;width:230px;height:38px;border:1px solid var(--border);border-radius:7px;overflow:hidden;background:#fafbfa}
+.header-search input{min-width:0;flex:1;border:0;outline:0;background:transparent;padding:0 10px;font-size:12px;color:var(--foreground)}
+.header-search button{border:0;background:var(--primary);color:#fff;padding:0 12px;font-size:12px;font-weight:700;cursor:pointer}
+.section-nav{background:#fff;border-bottom:1px solid var(--border)}
+.section-nav-inner{display:flex;align-items:center;justify-content:space-between;gap:18px;overflow-x:auto;scrollbar-width:none;white-space:nowrap}
+.section-nav-inner::-webkit-scrollbar{display:none}
+.section-nav a{font-size:12px;font-weight:700;color:#35443f;padding:13px 0;position:relative}
+.section-nav a:hover{color:var(--primary)}
+@media(max-width:1100px){.header-search{width:190px}.header-inner{gap:18px}.section-nav-inner{justify-content:flex-start}}
+@media(max-width:600px){
+  .header-actions{margin-inline-start:auto}
+  .header-search{width:42px;border:0;background:transparent}
+  .header-search input{display:none}
+  .header-search button{width:42px;padding:0;border-radius:7px;font-size:0}
+  .header-search button::after{content:"بحث";font-size:11px}
+  .header-actions .primary-btn{padding:9px 11px;font-size:11px}
+  .section-nav{display:block}
+  .section-nav-inner{gap:22px;padding-block:0}
+  .section-nav a{padding:11px 0;font-size:11px}
+}
