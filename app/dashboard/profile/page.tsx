@@ -51,9 +51,8 @@ export default function ProfilePage() {
     await supabase.auth.signOut();
     window.location.href = "/";
   }
-
   return (
-    <SiteChrome><main className="container py-10">
+    <main className="container py-10">
       <h1 className="text-3xl font-extrabold">الملف الشخصي</h1>
       <p className="mt-2 text-[var(--muted)]">حدّث بيانات التواصل الخاصة بك.</p>
 
