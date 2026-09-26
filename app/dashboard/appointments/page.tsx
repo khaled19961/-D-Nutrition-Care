@@ -49,7 +49,7 @@ export default function AppointmentsPage() {
   }
 
   return (
-    <main className="container py-10">
+    <SiteChrome><SiteChrome><main className="container py-10">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="text-3xl font-extrabold">مواعيدي</h1>
