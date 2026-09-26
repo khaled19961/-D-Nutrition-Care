@@ -405,7 +405,7 @@ h1,h2,h3,h4,h5,h6,p,span,a,button,label{overflow-wrap:anywhere}
 
 /* Further typography reduction requested: 5px smaller for homepage requested sections */
 .home-requested-section .home-store-heading h2{font-size:18px}
-.home-requested-section .home-store-heading a{font-size:5px}
+.home-requested-section .home-store-heading a{font-size:10px}
 .home-requested-section .home-product-name{font-size:7px}
 .home-requested-section .home-product-price strong{font-size:9px}
 .home-requested-section .home-add-cart{font-size:5px}
@@ -415,5 +415,5 @@ h1,h2,h3,h4,h5,h6,p,span,a,button,label{overflow-wrap:anywhere}
 /* Homepage section heading alignment: smaller headings and no divider lines */
 .home-store-section .home-store-heading h2{font-size:18px}
 .home-beauty-section .home-store-heading h2{font-size:18px}
-.home-store-section .home-store-heading a{font-size:10px}
+.home-store-section .home-store-heading a{font-size:15px}
 .home-requested-section{border-top:0!important}
