@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { SiteChrome } from "@/components/site-chrome";
 import Link from "next/link";
 import { createSupabaseBrowserClient } from "@/lib/supabase/browser";
 
@@ -33,6 +34,14 @@ export default function BookingPage() {
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [initialServiceId, setInitialServiceId] = useState("");
+  const [initialNutritionistId, setInitialNutritionistId] = useState("");
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setInitialServiceId(params.get("service") ?? "");
+    setInitialNutritionistId(params.get("nutritionist") ?? "");
+  }, []);
 
   useEffect(() => {
     let active = true;
@@ -46,13 +55,22 @@ export default function BookingPage() {
 
       if (!active) return;
       if (error) setError(error.message);
-      else setServices(data ?? []);
+      else {
+        const nextServices = (data ?? []) as Service[];
+        const filtered = initialNutritionistId
+          ? nextServices.filter((item) => item.nutritionist_id === initialNutritionistId)
+          : nextServices;
+        setServices(filtered);
+        if (initialServiceId && filtered.some((item) => item.id === initialServiceId)) {
+          setServiceId(initialServiceId);
+        }
+      }
       setLoadingServices(false);
     }
 
     loadServices();
     return () => { active = false; };
-  }, [supabase]);
+  }, [supabase, initialServiceId, initialNutritionistId]);
 
   useEffect(() => {
     let active = true;
