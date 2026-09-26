@@ -1,8 +1,8 @@
 const categories = [
-  { icon: "🥗", title: "التغذية العلاجية", text: "استشارات وخطط غذائية تناسب حالتك وأهدافك." },
-  { icon: "⚖️", title: "إنقاص الوزن", text: "برنامج عملي يساعدك على الوصول لوزن صحي بطريقة مستدامة." },
-  { icon: "💪", title: "التغذية الرياضية", text: "خطط تغذية تدعم أداءك الرياضي وتعافي جسمك." },
-  { icon: "👩‍⚕️", title: "أخصائيون متخصصون", text: "اختر الأخصائي المناسب واحجز موعدك بسهولة." }
+  { icon: "01", title: "التغذية العلاجية", text: "استشارات وخطط غذائية تناسب حالتك وأهدافك." },
+  { icon: "02", title: "إنقاص الوزن", text: "برنامج عملي يساعدك على الوصول لوزن صحي بطريقة مستدامة." },
+  { icon: "03", title: "التغذية الرياضية", text: "خطط تغذية تدعم أداءك الرياضي وتعافي جسمك." },
+  { icon: "04", title: "أخصائيون متخصصون", text: "اختر الأخصائي المناسب واحجز موعدك بسهولة." }
 ];
 
 const services = [
@@ -20,7 +20,7 @@ const offers = [
 export default function HomePage() {
   return (
     <main className="site-shell">
-      <div className="top-strip"><div className="container top-strip-inner"><span>🌿 صحتك تبدأ بخطوة</span><span>استشارات غذائية أونلاين بسهولة وأمان</span></div></div>
+      <div className="top-strip"><div className="container top-strip-inner"><span>صحتك تبدأ بخطوة</span><span>استشارات غذائية أونلاين بسهولة وأمان</span></div></div>
       <header className="main-header"><div className="container header-inner">
         <a href="/" className="brand"><span className="brand-mark">D</span><span><strong>D-Nutrition</strong><small>CARE</small></span></a>
         <nav className="desktop-nav" aria-label="التنقل الرئيسي"><a className="active" href="/">الرئيسية</a><a href="/nutritionists">الأخصائيون</a><a href="/programs">البرامج</a><a href="/articles">المقالات</a><a href="/about">من نحن</a></nav>
@@ -34,8 +34,8 @@ export default function HomePage() {
           <div className="trust-row"><div><strong>✓</strong><span>استشارات عن بعد</span></div><div><strong>✓</strong><span>خطط شخصية</span></div><div><strong>✓</strong><span>متابعة مستمرة</span></div></div>
         </div>
         <div className="hero-visual"><div className="hero-circle circle-one"></div><div className="hero-circle circle-two"></div>
-          <div className="nutrition-card main-nutrition-card"><div className="food-visual">🥑</div><div className="nutrition-card-content"><span>رحلتك الصحية</span><strong>خطوة بخطوة نحو الأفضل</strong><div className="progress"><span></span></div><small>خطة غذائية • متابعة • نتائج</small></div></div>
-          <div className="floating-card floating-top"><span>⭐</span><div><strong>أخصائيون متخصصون</strong><small>اختر من يناسب احتياجك</small></div></div>
+          <div className="nutrition-card main-nutrition-card"><div className="food-visual" aria-hidden="true"><span></span><span></span><span></span></div><div className="nutrition-card-content"><span>رحلتك الصحية</span><strong>خطوة بخطوة نحو الأفضل</strong><div className="progress"><span></span></div><small>خطة غذائية • متابعة • نتائج</small></div></div>
+          <div className="floating-card floating-top"><span className="status-dot" aria-hidden="true"></span><div><strong>أخصائيون متخصصون</strong><small>اختر من يناسب احتياجك</small></div></div>
           <div className="floating-card floating-bottom"><span>✓</span><div><strong>متابعة تقدمك</strong><small>بياناتك في مكان واحد</small></div></div>
         </div>
       </div></section>
@@ -45,7 +45,7 @@ export default function HomePage() {
       </div></section>
 
       <section className="services-section"><div className="container"><div className="section-heading split"><div><span>خدمات D-Nutrition-Care</span><h2>رعاية غذائية في مكان واحد</h2></div><a href="/programs" className="text-link">عرض جميع الخدمات ←</a></div>
-        <div className="services-grid">{services.map((service,index)=><article className="service-card" key={service.title}><span className="service-number">0{index+1}</span><div className="service-icon">{["🥗","📋","📈"][index]}</div><h3>{service.title}</h3><p>{service.text}</p><a href="/booking">اعرف المزيد ←</a></article>)}</div>
+        <div className="services-grid">{services.map((service,index)=><article className="service-card" key={service.title}><span className="service-number">0{index+1}</span><div className="service-icon">{String(index + 1).padStart(2, "0")}</div><h3>{service.title}</h3><p>{service.text}</p><a href="/booking">اعرف المزيد ←</a></article>)}</div>
       </div></section>
 
       <section className="offers-section"><div className="container"><div className="section-heading centered light"><span>ابدأ رحلتك الآن</span><h2>برامج وخدمات تناسب هدفك</h2></div>
@@ -63,7 +63,7 @@ export default function HomePage() {
         <div><h4>ابدأ رحلتك</h4><p>احصل على الرعاية الغذائية المناسبة لك.</p><a href="/booking" className="footer-btn">احجز الآن</a></div>
       </div><div className="container footer-bottom"><span>© D-Nutrition-Care</span><span>رعاية غذائية تبدأ من احتياجك</span></div></footer>
 
-      <nav className="mobile-nav" aria-label="التنقل للجوال"><a className="active" href="/">⌂<small>الرئيسية</small></a><a href="/nutritionists">♧<small>الأخصائيون</small></a><a href="/booking" className="mobile-book">＋<small>احجز</small></a><a href="/programs">▦<small>البرامج</small></a><a href="/auth/login">◯<small>حسابي</small></a></nav>
+      <nav className="mobile-nav" aria-label="التنقل للجوال"><a className="active" href="/"><small>الرئيسية</small></a><a href="/nutritionists"><small>الأخصائيون</small></a><a href="/booking" className="mobile-book"><small>احجز</small></a><a href="/programs"><small>البرامج</small></a><a href="/auth/login"><small>حسابي</small></a></nav>
     </main>
   );
 }
