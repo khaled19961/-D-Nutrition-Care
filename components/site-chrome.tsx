@@ -21,10 +21,28 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
           </Link>
           <MainNav />
           <div className="header-actions">
+            <form action="/nutritionists" method="get" className="header-search">
+              <input name="q" aria-label="ابحث عن أخصائي تغذية" placeholder="ابحث عن أخصائي" />
+              <button type="submit">بحث</button>
+            </form>
             <Link href="/booking" className="primary-btn">احجز استشارتك</Link>
           </div>
         </div>
       </header>
+      <nav className="section-nav" aria-label="أقسام الموقع">
+        <div className="container section-nav-inner">
+          <Link href="/categories">تسوق حسب الفئة</Link>
+          <Link href="/brands">تسوق بالعلامة التجارية</Link>
+          <Link href="/branches">فروعنا</Link>
+          <Link href="/bundles">عروض الباقات</Link>
+          <Link href="/health-weight">حساب الوزن الصحي</Link>
+          <Link href="/booking">حجز موعد</Link>
+          <Link href="/offers">العروض والخصومات</Link>
+          <Link href="/stacks">ستاك وكومبو</Link>
+          <Link href="/beauty">عناية وجمال</Link>
+          <Link href="/store">المتجر</Link>
+        </div>
+      </nav>
       {children}
       <footer className="footer">
         <div className="container footer-grid">
