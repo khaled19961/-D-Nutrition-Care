@@ -31,6 +31,7 @@ Updated: 2026-09-26
 4. 0004_security_reviews_articles.sql — review and article authorization hardening.
 5. 0005_public_nutritionist_directory.sql — safe public nutritionist RPCs.
 6. 0006_profile_signup_metadata.sql — persist registration metadata.
+7. 0007_booking_visibility.sql — restrict public services and booking to verified available nutritionists.
 
 ## Still required before production
 
