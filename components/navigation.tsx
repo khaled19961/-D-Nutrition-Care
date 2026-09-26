@@ -12,6 +12,14 @@ const items = [
   ["/more", "المزيد"],
 ] as const;
 
+const mobileItems = [
+  ["/", "⌂", "الرئيسية"],
+  ["/categories", "▦", "الفئات"],
+  ["/offers", "٪", "العروض"],
+  ["/cart", "🛒", "السلة"],
+  ["/more", "⋯", "المزيد"],
+] as const;
+
 function useCartCount() {
   const [count, setCount] = useState(0);
   useEffect(() => {
@@ -54,9 +62,10 @@ export function MobileNav() {
   const count = useCartCount();
   return (
     <nav className="mobile-nav" aria-label="التنقل للجوال">
-      {items.map(([href, label]) => (
+      {mobileItems.map(([href, icon, label]) => (
         <Link key={href} href={href} className={pathname === href ? "active" : undefined}>
-          <small>{label}{href === "/cart" && count > 0 ? <b className="cart-count">{count}</b> : null}</small>
+          <span className="mobile-nav-icon">{icon}{href === "/cart" && count > 0 ? <b className="cart-count">{count}</b> : null}</span>
+          <small>{label}</small>
         </Link>
       ))}
     </nav>
