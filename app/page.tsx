@@ -16,7 +16,7 @@ export default function HomePage() {
             <a href="/articles">المقالات</a>
             <a href="/about">من نحن</a>
           </nav>
-          <a href="/booking" className="rounded-xl bg-[var(--primary)] px-5 py-3 font-semibold text-white">احجز استشارتك</a>
+          <div className="flex items-center gap-3"><a href="/auth/login" className="hidden rounded-xl border border-[var(--border)] px-4 py-2 font-semibold sm:inline-flex">دخول</a><a href="/booking" className="rounded-xl bg-[var(--primary)] px-5 py-3 font-semibold text-white">احجز استشارتك</a></div>
         </div>
       </header>
 
@@ -30,7 +30,7 @@ export default function HomePage() {
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
               <a href="/nutritionists" className="rounded-xl bg-[var(--primary)] px-6 py-3 font-semibold text-white">اكتشف الأخصائيين</a>
-              <a href="/articles" className="rounded-xl border border-[var(--border)] bg-white px-6 py-3 font-semibold">اقرأ المحتوى</a>
+              <a href="/auth/register" className="rounded-xl border border-[var(--border)] bg-white px-6 py-3 font-semibold">ابدأ مجاناً</a>
             </div>
           </div>
           <div className="min-h-80 rounded-3xl bg-emerald-50 p-8">
