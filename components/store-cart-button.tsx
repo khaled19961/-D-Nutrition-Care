@@ -8,7 +8,7 @@ export function StoreCartButton({ item }: { item: Omit<CartItem, "quantity"> }) 
   const [added, setAdded] = useState(false);
   function add() {
     const raw = localStorage.getItem("dnc-cart");
-    const cart: CartItem[] = raw ? JSON.parse(raw) : [];
+    const parsed = raw ? JSON.parse(raw) : []; const cart: CartItem[] = Array.isArray(parsed) ? parsed.filter((x) => x && typeof x.productId === "string" && Number.isFinite(Number(x.quantity)) && Number(x.quantity) > 0) : [];
     const existing = cart.find((x) => x.productId === item.productId);
     if (existing) existing.quantity += 1;
     else cart.push({ ...item, quantity: 1 });
