@@ -13,6 +13,7 @@ export default function AvailabilityPage() {
   const [duration, setDuration] = useState("60");
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
+  const [saving, setSaving] = useState(false);
 
   async function load() {
     const supabase = createSupabaseBrowserClient();
@@ -37,10 +38,14 @@ export default function AvailabilityPage() {
     setError(""); setMessage("");
     if (!date || !time) { setError("اختر التاريخ والوقت."); return; }
 
+    const durationValue = Number(duration);
+    if (!Number.isInteger(durationValue) || durationValue < 15) { setError("مدة الموعد يجب أن تكون 15 دقيقة أو أكثر."); return; }
+
     const start = new Date(`${date}T${time}:00`);
     if (Number.isNaN(start.getTime()) || start <= new Date()) { setError("يجب أن يكون الموعد في المستقبل."); return; }
-    const end = new Date(start.getTime() + Number(duration) * 60000);
+    const end = new Date(start.getTime() + durationValue * 60000);
 
+    setSaving(true);
     const supabase = createSupabaseBrowserClient();
     const { error } = await supabase.from("availability_slots").insert({
       nutritionist_id: nutritionistId,
@@ -49,7 +54,8 @@ export default function AvailabilityPage() {
       status: "open"
     });
 
-    if (error) setError(error.message);
+    setSaving(false);
+    if (error) setError("تعذر إضافة الموعد. قد يكون هناك تعارض مع موعد موجود.");
     else { setMessage("تمت إضافة الموعد المتاح."); setDate(""); setTime("18:00"); await load(); }
   }
 
@@ -73,7 +79,7 @@ export default function AvailabilityPage() {
           <input required type="number" min="15" step="15" value={duration} onChange={(e)=>setDuration(e.target.value)} placeholder="المدة بالدقائق" className="w-full rounded-xl border border-[var(--border)] px-4 py-3" />
           {error && <p className="rounded-xl bg-red-50 p-3 text-sm text-red-700">{error}</p>}
           {message && <p className="rounded-xl bg-emerald-50 p-3 text-sm text-emerald-800">{message}</p>}
-          <button className="w-full rounded-xl bg-[var(--primary)] px-5 py-3 font-bold text-white">إضافة الموعد</button>
+          <button disabled={saving} className="w-full rounded-xl bg-[var(--primary)] px-5 py-3 font-bold text-white disabled:opacity-50">{saving ? "جارٍ الحفظ..." : "إضافة الموعد"}</button>
         </form>
 
         <section className="space-y-3">
@@ -81,7 +87,7 @@ export default function AvailabilityPage() {
             <article key={slot.id} className="rounded-3xl border border-[var(--border)] bg-white p-5 flex flex-wrap justify-between gap-4">
               <div>
                 <p className="font-bold">{new Date(slot.starts_at).toLocaleString("ar-SA")}</p>
-                <p className="mt-1 text-sm text-[var(--muted)]">حتى {new Date(slot.ends_at).toLocaleTimeString("ar-SA", {hour:"2-digit",minute:"2-digit"})} · {slot.status}</p>
+                <p className="mt-1 text-sm text-[var(--muted)]">حتى {new Date(slot.ends_at).toLocaleTimeString("ar-SA", {hour:"2-digit",minute:"2-digit"})} · {slot.status === "open" ? "متاح للحجز" : slot.status === "booked" ? "محجوز" : "محظور"}</p>
               </div>
               {slot.status === "open" && <button onClick={()=>blockSlot(slot)} className="rounded-xl border border-[var(--border)] px-4 py-2 text-sm">حظر</button>}
             </article>
