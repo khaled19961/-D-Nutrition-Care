@@ -21,7 +21,7 @@ export default async function NutritionistDetailPage({ params }: { params: Promi
     .order("price", { ascending: true });
 
   return (
-    <main className="container py-14">
+    <SiteChrome>\n      <main className="container py-14">
       <Link href="/nutritionists" className="text-sm font-semibold text-[var(--primary)]">← جميع الأخصائيين</Link>
       <section className="mt-6 rounded-3xl border border-[var(--border)] bg-white p-7 md:p-10">
         <div className="flex flex-wrap items-center gap-5">
@@ -30,14 +30,14 @@ export default async function NutritionistDetailPage({ params }: { params: Promi
           </div>
           <div>
             <h1 className="text-3xl font-extrabold">{nutritionist.full_name || "أخصائي تغذية"}</h1>
-            <p className="mt-2 text-[var(--muted)]">{nutritionist.years_experience || 0} سنوات خبرة</p>
+            <p className="mt-2 text-[var(--muted)]">{nutritionist.years_experience != null ? `${nutritionist.years_experience} سنوات خبرة` : "الخبرة غير محددة"}</p>
           </div>
         </div>
-        <p className="mt-7 max-w-3xl leading-8 text-[var(--muted)]">{nutritionist.bio || "متابعة غذائية واستشارات مخصصة حسب الهدف والحالة."}</p>
+        <p className="mt-7 max-w-3xl leading-8 text-[var(--muted)]">{nutritionist.bio || "لم تتم إضافة نبذة تعريفية بعد."}</p>
         <div className="mt-8 grid gap-4 sm:grid-cols-3">
           <Stat label="سنوات الخبرة" value={String(nutritionist.years_experience || 0)} />
           <Stat label="سعر الاستشارة" value={nutritionist.consultation_fee ? `${nutritionist.consultation_fee} ${nutritionist.currency || "SAR"}` : "حسب الخدمة"} />
-          <Stat label="الحالة" value="متاح للحجز" />
+          <Stat label="الحالة" value={services?.length ? "لديه خدمات منشورة" : "لا توجد خدمات منشورة"} />
         </div>
       </section>
 
@@ -55,7 +55,7 @@ export default async function NutritionistDetailPage({ params }: { params: Promi
             </article>
           )) : <p className="text-[var(--muted)]">لا توجد خدمات منشورة حالياً.</p>}
         </div>
-        {services?.length ? <Link href="/booking" className="mt-7 inline-flex rounded-xl bg-[var(--primary)] px-6 py-3 font-bold text-white">اختيار الموعد والحجز</Link> : null}
+        {services?.length ? <Link href={`/booking?nutritionist=${id}`} className="mt-7 inline-flex rounded-xl bg-[var(--primary)] px-6 py-3 font-bold text-white">اختيار الموعد والحجز</Link> : null}
       </section>
     </main>
   );
