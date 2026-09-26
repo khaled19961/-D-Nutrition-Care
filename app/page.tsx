@@ -24,7 +24,7 @@ export default async function HomePage() {
   ]);
   const publicNutritionists = (nutritionists ?? []) as any[];
   const categories = [
-    ["التغذية العلاجية","خطط غذائية حسب الحالة الصحية","/categories"],
+    ["التغذية العلاجية","خطط غذائية حسب الحالة الصحية","/programs"],
     ["إنقاص الوزن","برامج متوازنة لإدارة الوزن","/programs"],
     ["الرياضة","تغذية وأهداف الأداء الرياضي","/programs"],
     ["تغذية الأطفال","إرشادات غذائية مناسبة للأطفال","/articles"],
