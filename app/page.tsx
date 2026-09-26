@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import { SiteChrome } from "@/components/site-chrome";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -28,9 +29,9 @@ export default async function HomePage() {
       <main>
         <section className="hero-banner-area" aria-label="البنرات الرئيسية">
           {activeBanners.length ? (
-            <div className="hero-banner-carousel">
+            <div className="hero-banner-carousel" style={{"--banner-count": activeBanners.length} as CSSProperties}>
               {activeBanners.map((banner, index) => {
-                const content = <div className="hero-banner-slide">
+                const content = <div className="hero-banner-slide" style={{"--banner-index": index} as CSSProperties}>
                   <img src={banner.image_url} alt={banner.alt_ar || banner.title_ar || "بنر D-Nutrition-Care"} />
                   {(banner.title_ar || banner.subtitle_ar) && (
                     <div className="hero-banner-overlay">
