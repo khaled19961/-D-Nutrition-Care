@@ -421,14 +421,14 @@ h1,h2,h3,h4,h5,h6,p,span,a,button,label{overflow-wrap:anywhere}
 
 /* Main hero: two equal fixed tiles on the left + animated banner rail on the right */
 .home-hero-layout{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;direction:ltr;align-items:stretch}
-.home-hero-fixed{display:grid;grid-column:1 / span 2;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;direction:ltr;min-width:0}
+.home-hero-fixed{display:grid;grid-column:1 / span 2;grid-template-columns:1fr;grid-template-rows:repeat(2,minmax(0,1fr));gap:12px;direction:ltr;min-width:0}
 .home-hero-fixed-banner,.home-hero-slide{display:block;position:relative;overflow:hidden;border-radius:10px;background:#eef3e9;min-width:0}
-.home-hero-fixed-banner{aspect-ratio:1/1}
+.home-hero-fixed-banner{aspect-ratio:auto;min-height:0}
 .home-hero-fixed-banner img,.home-hero-slide img{display:block;width:100%;height:100%;object-fit:cover}
 .home-hero-slider{grid-column:3;overflow:hidden;border-radius:10px;min-width:0;direction:ltr;aspect-ratio:2/1}
-.home-hero-slider-track{display:flex;width:max-content;height:100%;animation:homeHeroSlideLTR 28s linear infinite;direction:ltr}
+.home-hero-slider-track{display:flex;width:max-content;height:100%;animation:homeHeroSlideLTR 12s cubic-bezier(.55,0,.35,1) 3s infinite;direction:ltr}
 .home-hero-slide{width:min(620px,calc((1180px - 24px)/3 * 2));height:100%;flex:none}
 .home-hero-layout .home-main-banner-caption{padding:20px}
-@keyframes homeHeroSlideLTR{from{transform:translateX(calc(-50% + 1px))}to{transform:translateX(0)}}
-@media(max-width:800px){.home-hero-layout{grid-template-columns:1fr;direction:rtl}.home-hero-fixed{grid-column:1;grid-row:2;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.home-hero-slider{grid-column:1;grid-row:1;aspect-ratio:16/9}.home-hero-slide{width:100vw;max-width:100%}}
+@keyframes homeHeroSlideLTR{0%,25%{transform:translateX(calc(-50% + 1px))}45%,55%{transform:translateX(calc(-50% + 1px))}75%,100%{transform:translateX(0)}}
+@media(max-width:800px){.home-hero-layout{grid-template-columns:1fr;direction:rtl}.home-hero-fixed{grid-column:1;grid-row:2;grid-template-columns:1fr;grid-template-rows:repeat(2,minmax(0,1fr));gap:8px}.home-hero-slider{grid-column:1;grid-row:1;aspect-ratio:16/9}.home-hero-slide{width:100vw;max-width:100%}}
 @media(prefers-reduced-motion:reduce){.home-hero-slider-track{animation:none}.home-hero-slide:not(:first-child){display:none}}
