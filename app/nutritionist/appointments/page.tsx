@@ -83,10 +83,27 @@ export default function NutritionistAppointmentsPage() {
     setSavingId(appointment.id);
     setError("");
     const supabase = createSupabaseBrowserClient();
+
+    if (status === "cancelled") {
+      const { error: cancelError } = await supabase.rpc("cancel_appointment", {
+        p_appointment_id: appointment.id,
+        p_reason: "تم الإلغاء من قبل الأخصائي"
+      });
+
+      setSavingId("");
+      if (cancelError) {
+        setError("تعذر إلغاء الحجز. قد يكون الموعد بدأ أو تغيرت حالته.");
+        return;
+      }
+      await load();
+      return;
+    }
+
     const { error: updateError } = await supabase
       .from("appointments")
       .update({ status })
-      .eq("id", appointment.id);
+      .eq("id", appointment.id)
+      .in("status", status === "confirmed" ? ["pending"] : ["confirmed"]);
 
     setSavingId("");
     if (updateError) {
@@ -132,6 +149,7 @@ export default function NutritionistAppointmentsPage() {
                   <div className="appointment-actions">
                     {item.status === "pending" && <button disabled={savingId === item.id} onClick={() => updateStatus(item, "confirmed")}>تأكيد الحجز</button>}
                     <button disabled={savingId === item.id} onClick={() => updateStatus(item, "completed")}>تسجيل كمكتمل</button>
+                    {item.status === "confirmed" && <button disabled={savingId === item.id} onClick={() => updateStatus(item, "no_show")}>تسجيل عدم الحضور</button>}
                     <button disabled={savingId === item.id} onClick={() => updateStatus(item, "cancelled")}>إلغاء</button>
                   </div>
                 )}
