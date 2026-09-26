@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { SiteChrome } from "@/components/site-chrome";
 
 export const dynamic = "force-dynamic";
 
@@ -28,7 +27,7 @@ export default async function DashboardPage() {
     .limit(5);
 
   return (
-    <SiteChrome><main className="min-h-screen bg-[var(--background)] py-10">
+    <main className="min-h-screen bg-[var(--background)] py-10">
       <div className="container">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
@@ -71,7 +70,6 @@ export default async function DashboardPage() {
         </section>
       </div>
     </main>
-    </SiteChrome>
   );
 }
 
