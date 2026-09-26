@@ -21,16 +21,29 @@ export default function LoginPage() {
     setError("");
 
     const supabase = createSupabaseBrowserClient();
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    try {
+      const result = await Promise.race([
+        supabase.auth.signInWithPassword({ email, password }),
+        new Promise<never>((_, reject) =>
+          window.setTimeout(
+            () => reject(new Error("انتهت مهلة الاتصال بخدمة تسجيل الدخول. تحقق من اتصال الموقع بـ Supabase ثم حاول مرة أخرى.")),
+            15000
+          )
+        ),
+      ]);
 
-    if (error) {
-      setError(error.message);
+      if (result.error) {
+        setError(result.error.message);
+        setPending(false);
+        return;
+      }
+
+      router.replace(next);
+      router.refresh();
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "تعذر تسجيل الدخول حالياً.");
       setPending(false);
-      return;
     }
-
-    router.replace(next);
-    router.refresh();
   }
 
   return (
