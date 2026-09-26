@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { SiteChrome } from "@/components/site-chrome";
 
 export const revalidate = 60;
 
-export default async function NutritionistsPage() {
+export default async function NutritionistsPage({ searchParams }: { searchParams?: Promise<{ q?: string }> }) {
   const supabase = await createSupabaseServerClient();
+  const q = (await searchParams)?.q?.trim().toLocaleLowerCase("ar") || "";
   const { data: rawData, error } = await supabase.rpc("list_public_nutritionists");
   const data = rawData as Array<{
     id: string;
@@ -22,7 +24,7 @@ export default async function NutritionistsPage() {
         <p className="mt-4 leading-8 text-[var(--muted)]">تعرّف على الأخصائيين المتاحين واختر الخدمة والموعد المناسبين لك.</p>
       </div>
 
-      {error ? (
+      <form action="/nutritionists" method="get" className="site-search" style={{ marginTop: "24px", marginBottom: "24px" }}><input name="q" defaultValue={q} placeholder="ابحث باسم الأخصائي" aria-label="بحث" /><button type="submit">بحث</button></form>\n      {error ? (
         <div className="mt-8 rounded-2xl bg-red-50 p-5 text-red-700">تعذر تحميل الأخصائيين حالياً.</div>
       ) : data?.length ? (
         <div className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
