@@ -30,5 +30,6 @@ export default async function DashboardProgramsPage() {
         }) : <div className="rounded-3xl border border-[var(--border)] bg-white p-8 text-center text-[var(--muted)]">لا توجد برامج مرتبطة بحسابك.</div>}
       </div>
     </main>
+    </SiteChrome>
   );
 }
