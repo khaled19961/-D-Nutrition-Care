@@ -23,7 +23,7 @@ const homeCategories = [
   { name: "معدات رياضية", slug: "sports-equipment", icon: "sport" as const },
 ];
 
-const homeProductSections = [
+const homeProductSections: Array<{ key: string; title: string; categorySlug?: string; brandSlug?: string; featured?: boolean }> = [
   { key: "combos", title: "الكومبوهات الأكثر مبيعًا!!", categorySlug: "best-selling-combos" },
   { key: "empower", title: "امباور نيوتريشن", brandSlug: "empower-nutrition" },
   { key: "pre-workout", title: "اكثر المنتجات مبيعا!! - قبل التمرين", categorySlug: "pre-workout" },
