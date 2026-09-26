@@ -13,14 +13,19 @@ export async function SiteChrome({ children }: { children: React.ReactNode }) {
   return (
     <div className="site-shell">
       <div className="top-strip">
-        <div className="container top-strip-inner">
-          <Link href="/more#location">اختر العنوان</Link>
-          <span>رعاية غذائية أونلاين</span>
-          <span>استشارات وخطط غذائية ومتابعة</span>
-          <Link href="/auth/login">حسابي</Link>
+        <div className="moving-strip-track">
+          <span>استشارات غذائية أونلاين</span><span>خطط غذائية شخصية</span><span>متابعة غذائية مستمرة</span><span>أخصائيون تغذية</span><span>برامج غذائية</span><span>استشارات غذائية أونلاين</span><span>خطط غذائية شخصية</span><span>متابعة غذائية مستمرة</span>
         </div>
       </div>
-      <div className="moving-strip"><div className="moving-strip-track"><span>استشارات غذائية</span><span>خطط غذائية شخصية</span><span>متابعة غذائية مستمرة</span><span>محتوى غذائي موثوق</span><span>استشارات غذائية</span><span>خطط غذائية شخصية</span><span>متابعة غذائية مستمرة</span><span>محتوى غذائي موثوق</span></div></div>
+      <div className="quick-header-links">
+        <div className="container quick-header-links-inner">
+          <Link href="/categories">التغذية العلاجية</Link>
+          <Link href="/programs">إنقاص الوزن</Link>
+          <Link href="/nutritionists">أخصائيو التغذية</Link>
+          <Link href="/booking">احجز استشارتك</Link>
+          <Link href="/articles">نصائح غذائية</Link>
+        </div>
+      </div>
       <header className="main-header">
         <div className="container header-inner">
           <Link href="/" className="brand" aria-label={siteName}>
