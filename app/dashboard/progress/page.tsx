@@ -65,9 +65,8 @@ export default function ProgressPage() {
       await load();
     }
   }
-
   return (
-    <SiteChrome><main className="container py-10">
+    <main className="container py-10">
       <h1 className="text-3xl font-extrabold">متابعة التقدم</h1>
       <p className="mt-2 text-[var(--muted)]">سجّل القياسات الأساسية وراجع تاريخ تقدمك.</p>
 
@@ -109,6 +108,5 @@ export default function ProgressPage() {
         </section>
       </div>
     </main>
-    </SiteChrome>
   );
 }
