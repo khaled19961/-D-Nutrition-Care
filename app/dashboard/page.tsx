@@ -50,13 +50,13 @@ export default async function DashboardPage() {
             <Link href="/dashboard/appointments" className="text-sm font-semibold text-[var(--primary)]">عرض الكل</Link>
           </div>
 
-          {appointments?.length ? (
+          {upcoming.length ? (
             <div className="mt-5 space-y-3">
-              {appointments.map((item) => (
+              {upcoming.map((item) => (
                 <div key={item.id} className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[var(--border)] p-4">
                   <div>
                     <p className="font-semibold">{new Date(item.starts_at).toLocaleString("ar-SA")}</p>
-                    <p className="mt-1 text-sm text-[var(--muted)]">حالة الموعد: {item.status}</p>
+                    <p className="mt-1 text-sm text-[var(--muted)]">حالة الموعد: {statusLabels[item.status] || "غير محددة"}</p>
                   </div>
                   <span className="rounded-full bg-emerald-50 px-3 py-1 text-sm text-[var(--primary)]">موعد</span>
                 </div>
