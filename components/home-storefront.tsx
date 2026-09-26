@@ -127,7 +127,7 @@ export function HomeStorefront({
         <div className="container">
           <div className="home-category-rail">
             {categories.map((category) => (
-              <Link href={`/categories?category=${category.slug}`} className="home-category-item" key={category.slug}>
+              <Link href={`/store?category=${category.slug}`} className="home-category-item" key={category.slug}>
                 <span className="home-category-icon">{categoryIcons[category.icon]}</span>
                 <strong>{category.name}</strong>
               </Link>
@@ -162,7 +162,7 @@ export function HomeStorefront({
           <Link href="/beauty" className="home-dual-promo home-summer">
             <div><span>العناية والجمال</span><h3>ركن الصيف</h3><p>ترطيب عميق وعناية متكاملة لبشرة صحية</p><b>اطلبي الآن</b></div>
           </Link>
-          <Link href="/categories?category=supplements" className="home-dual-promo home-supplements">
+          <Link href="/store?category=supplements" className="home-dual-promo home-supplements">
             <div><span>المكملات الرياضية</span><h3>اختر مكملات موثوقة</h3><p>صحتك تستحق الأفضل</p><b>اطلبه الآن</b></div>
           </Link>
         </div>
