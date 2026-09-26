@@ -91,5 +91,6 @@ export default function AppointmentsPage() {
         })}
       </section>
     </main>
+    </SiteChrome>
   );
 }
