@@ -45,6 +45,8 @@ export default function HomePage() {
         </div>
       </header>
 
+      <div className="store-tools"><div className="container store-tools-inner"><a href="/more#location">اختر العنوان</a><form action="/nutritionists" method="get" className="site-search"><input name="q" aria-label="ابحث عن خدمة أو أخصائي" placeholder="ابحث عن خدمة أو أخصائي تغذية" /><button type="submit">بحث</button></form></div></div>
+
       <section className="hero">
         <div className="container hero-content">
           <span className="eyebrow">D-Nutrition-Care</span>
@@ -146,10 +148,10 @@ export default function HomePage() {
 
       <nav className="mobile-nav" aria-label="التنقل للجوال">
         <a className="active" href="/"><small>الرئيسية</small></a>
-        <a href="/nutritionists"><small>الأخصائيون</small></a>
-        <a href="/booking" className="mobile-book"><small>احجز</small></a>
-        <a href="/programs"><small>البرامج</small></a>
-        <a href="/auth/login"><small>حسابي</small></a>
+        <a href="/categories"><small>الفئات</small></a>
+        <a href="/offers"><small>العروض</small></a>
+        <a href="/cart"><small>السلة</small></a>
+        <a href="/more"><small>المزيد</small></a>
       </nav>
     </main>
   );
