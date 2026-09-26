@@ -144,7 +144,8 @@ export default function BookingPage() {
   const selectedService = services.find((item) => item.id === serviceId);
 
   return (
-    <SiteChrome>\n      <main className="min-h-screen bg-[var(--background)] py-12">
+    <SiteChrome>
+      <main className="min-h-screen bg-[var(--background)] py-12">
       <div className="container max-w-3xl">
         <Link href="/" className="text-sm font-semibold text-[var(--primary)]">← الرئيسية</Link>
         <h1 className="mt-5 text-4xl font-extrabold">حجز استشارة</h1>
@@ -218,4 +219,7 @@ export default function BookingPage() {
           )}
         </section>
       </div>
-      </main>\n    </SiteChrome>\n  );\n}
+      </main>
+    </SiteChrome>
+  );
+}
