@@ -34,7 +34,6 @@ export default function HomePage() {
 
         <div className="store-tools">
           <div className="container store-tools-inner">
-            <Link href="/more#location">اختر العنوان</Link>
             <form action="/nutritionists" method="get" className="site-search">
               <input name="q" aria-label="ابحث عن خدمة أو أخصائي" placeholder="ابحث عن خدمة أو أخصائي تغذية" />
               <button type="submit">بحث</button>
