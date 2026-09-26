@@ -12,6 +12,7 @@ export default function GoalsPage() {
   const [unit, setUnit] = useState("كجم");
   const [date, setDate] = useState("");
   const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
 
   async function load() {
     const supabase = createSupabaseBrowserClient();
@@ -22,6 +23,9 @@ export default function GoalsPage() {
 
   async function add(event: FormEvent) {
     event.preventDefault(); setError("");
+    if (!title.trim()) { setError("اكتب اسم الهدف أولاً."); return; }
+    if (target && (!Number.isFinite(Number(target)) || Number(target) < 0)) { setError("القيمة المستهدفة غير صالحة."); return; }
+    setSaving(true);
     const supabase = createSupabaseBrowserClient();
     const { data: user } = await supabase.auth.getUser();
     if (!user.user) return;
@@ -33,14 +37,15 @@ export default function GoalsPage() {
       target_date: date || null,
       status: "active"
     });
-    if (error) setError(error.message);
+    if (error) setError("تعذر حفظ الهدف حالياً.");
     else { setTitle(""); setTarget(""); setDate(""); await load(); }
+    setSaving(false);
   }
 
   async function complete(id: string) {
     const supabase = createSupabaseBrowserClient();
-    const { error } = await supabase.from("goals").update({ status: "completed" }).eq("id", id);
-    if (error) setError(error.message); else await load();
+    const { error } = await supabase.from("goals").update({ status: "completed" }).eq("id", id).eq("status", "active");
+    if (error) setError("تعذر تحديث الهدف حالياً."); else await load();
   }
   return (
     <main className="container py-10">
@@ -53,7 +58,7 @@ export default function GoalsPage() {
           <input value={unit} onChange={(e)=>setUnit(e.target.value)} placeholder="الوحدة" className="w-full rounded-xl border border-[var(--border)] px-4 py-3" />
           <input type="date" value={date} onChange={(e)=>setDate(e.target.value)} className="w-full rounded-xl border border-[var(--border)] px-4 py-3" />
           {error && <p className="rounded-xl bg-red-50 p-3 text-sm text-red-700">{error}</p>}
-          <button className="w-full rounded-xl bg-[var(--primary)] px-5 py-3 font-bold text-white">إضافة الهدف</button>
+          <button disabled={saving} className="w-full rounded-xl bg-[var(--primary)] px-5 py-3 font-bold text-white disabled:opacity-50">{saving ? "جارٍ الحفظ..." : "إضافة الهدف"}</button>
         </form>
         <section className="space-y-3">
           {items.map((item)=><article key={item.id} className="rounded-3xl border border-[var(--border)] bg-white p-5 flex flex-wrap justify-between gap-4">
