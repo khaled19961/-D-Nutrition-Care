@@ -19,9 +19,8 @@ export default async function NutritionistDetailPage({ params }: { params: Promi
     .eq("nutritionist_id", id)
     .eq("is_active", true)
     .order("price", { ascending: true });
-
   return (
-    <SiteChrome>\n      <main className="container py-14">
+    \n      <main className="container py-14">
       <Link href="/nutritionists" className="text-sm font-semibold text-[var(--primary)]">← جميع الأخصائيين</Link>
       <section className="mt-6 rounded-3xl border border-[var(--border)] bg-white p-7 md:p-10">
         <div className="flex flex-wrap items-center gap-5">
