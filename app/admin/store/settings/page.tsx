@@ -50,13 +50,18 @@ export default function StoreSettingsPage() {
     e.preventDefault(); setMessage(""); setError("");
     if(!file){setError("اختر صورة البنر أولاً.");return;}
     const supabase=createSupabaseBrowserClient();
-    const {data:{user}}=await supabase.auth.getUser();
-    if(!user){setError("يجب تسجيل الدخول.");return;}
-    const safe=file.name.toLowerCase().replace(/[^a-z0-9._-]/g,"-");
-    const path=`banners/${crypto.randomUUID()}-${safe}`;
-    const upload=await supabase.storage.from("site-assets").upload(path,file,{upsert:false,contentType:file.type});
-    if(upload.error){setError(upload.error.message);return;}
+    const {data:{session}}=await supabase.auth.getSession();
+    const user=session?.user;
+    if(!user){setError("انتهت جلسة الإدارة. أعد تسجيل الدخول.");return;}
+    if(!["image/png","image/jpeg","image/webp"].includes(file.type)){setError("صيغة الصورة غير مدعومة. استخدم PNG أو JPG أو WEBP.");return;}
+    if(file.size > 8 * 1024 * 1024){setError("حجم الصورة أكبر من 8 ميجابايت.");return;}
+    setMessage("جاري رفع صورة البنر...");
+    const ext=file.name.split(".").pop()?.toLowerCase() || "webp";
+    const path=`banners/${crypto.randomUUID()}.${ext}`;
+    const upload=await supabase.storage.from("site-assets").upload(path,file,{upsert:false,contentType:file.type,cacheControl:"3600"});
+    if(upload.error){setError(`فشل رفع الصورة: ${upload.error.message}`);setMessage("");return;}
     const {data:urlData}=supabase.storage.from("site-assets").getPublicUrl(path);
+    if(!urlData?.publicUrl){await supabase.storage.from("site-assets").remove([path]);setError("تعذر إنشاء رابط الصورة.");setMessage("");return;}
     const {error}=await supabase.from("site_banners").insert({
       image_url:urlData.publicUrl,
       alt_ar:banner.alt_ar||banner.title_ar||"بنر الموقع",
@@ -66,7 +71,7 @@ export default function StoreSettingsPage() {
       sort_order:banners.length,
       is_active:true
     });
-    if(error){await supabase.storage.from("site-assets").remove([path]);setError(error.message);return;}
+    if(error){await supabase.storage.from("site-assets").remove([path]);setError(`تم رفع الصورة لكن تعذر حفظ البنر: ${error.message}`);setMessage("");return;}
     setFile(null);setBanner({title_ar:"",subtitle_ar:"",alt_ar:"",link_url:""});setMessage("تمت إضافة البنر.");await load();
   }
 
