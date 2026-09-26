@@ -32,7 +32,7 @@ export default async function HomePage() {
             <div className="hero-banner-carousel" style={{"--banner-count": activeBanners.length} as CSSProperties}>
               {activeBanners.map((banner, index) => {
                 const content = <div className="hero-banner-slide" style={{"--banner-index": index} as CSSProperties}>
-                  <img src={banner.image_url} alt={banner.alt_ar || banner.title_ar || "بنر D-Nutrition-Care"} />
+                  <img src={banner.image_url} alt={banner.alt_ar || banner.title_ar || "بنر D-Nutrition-Care"} loading={index === 0 ? "eager" : "lazy"} fetchPriority={index === 0 ? "high" : "low"} decoding="async" />
                   {(banner.title_ar || banner.subtitle_ar) && (
                     <div className="hero-banner-overlay">
                       {banner.title_ar && <h1>{banner.title_ar}</h1>}
