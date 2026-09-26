@@ -31,10 +31,11 @@ export default function HomePage() {
 
           <nav className="desktop-nav" aria-label="التنقل الرئيسي">
             <a className="active" href="/">الرئيسية</a>
+            <a href="/categories">الفئات</a>
+            <a href="/offers">العروض</a>
             <a href="/nutritionists">الأخصائيون</a>
-            <a href="/programs">البرامج</a>
             <a href="/articles">المقالات</a>
-            <a href="/about">من نحن</a>
+            <a href="/more">المزيد</a>
           </nav>
 
           <div className="header-actions">
