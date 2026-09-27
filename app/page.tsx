@@ -98,6 +98,8 @@ export default async function HomePage() {
   ]));
 
   const activeBanners = (banners ?? []) as Banner[];
+  const fixedBanners = activeBanners.slice(0, 2);
+  const movingBanners = activeBanners.slice(2, 10);
 
   return (
     <SiteChrome>
@@ -107,7 +109,7 @@ export default async function HomePage() {
             {activeBanners.length ? (
               <div className="home-hero-layout">
                 <div className="home-hero-fixed">
-                  {[activeBanners[1] || activeBanners[0], activeBanners[2] || activeBanners[0]].map((banner, index) => (
+                  {fixedBanners.map((banner, index) => (
                     <Link key={`${banner.id}-fixed-${index}`} href={banner.link_url || "#"} className="home-hero-fixed-banner">
                       <img src={banner.image_url} alt={banner.alt_ar || banner.title_ar || "عرض"} loading="eager" decoding="async" />
                       {(banner.title_ar || banner.subtitle_ar) && (
@@ -121,7 +123,7 @@ export default async function HomePage() {
                 </div>
                 <div className="home-hero-slider" aria-label="عروض متحركة">
                   <div className="home-hero-slider-track">
-                    {[...activeBanners, ...activeBanners].map((banner, index) => (
+                    {[...movingBanners, ...movingBanners].map((banner, index) => (
                       <Link key={`${banner.id}-slide-${index}`} href={banner.link_url || "#"} className="home-hero-slide">
                         <img src={banner.image_url} alt={banner.alt_ar || banner.title_ar || "البنر الرئيسي"} loading={index === 0 ? "eager" : "lazy"} decoding="async" />
                         {(banner.title_ar || banner.subtitle_ar) && (
