@@ -5,7 +5,7 @@ export function createSupabaseBrowserClient() {
   return createBrowserClient(getSupabaseUrl(), getSupabaseKey(), {
     auth: {
       flowType: "pkce",
-      detectSessionInUrl: false,
+      detectSessionInUrl: true,
       persistSession: true,
       autoRefreshToken: true,
     },
