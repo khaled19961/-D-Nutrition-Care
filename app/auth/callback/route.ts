@@ -52,6 +52,7 @@ export async function GET(request: Request) {
         return redirectWithNoStore(NextResponse.redirect(targetUrl));
       }
 
+      const supabase = await createSupabaseServerClient();
       const { error } = await supabase.auth.exchangeCodeForSession(code);
       if (error) {
         return redirectWithNoStore(redirectError(url, "auth_callback", nextRaw));
