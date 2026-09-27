@@ -41,14 +41,7 @@ export async function SiteChrome({ children }: { children: React.ReactNode }) {
               <button type="submit">بحث</button>
             </form>
             <div className="header-account-links" aria-label="حساب العميل">
-              {isSignedIn ? (
-                <Link href="/dashboard" className="header-account-link">حسابي</Link>
-              ) : (
-                <>
-                  <Link href="/auth/login" className="header-account-link">تسجيل الدخول</Link>
-                  <Link href="/auth/register" className="header-account-link header-account-register">إنشاء حساب</Link>
-                </>
-              )}
+              <Link href={isSignedIn ? "/dashboard" : "/auth/login?next=/dashboard"} className="header-account-link">حسابي</Link>
             </div>
             <Link href="/booking" className="primary-btn">احجز استشارتك</Link>
           </div>
