@@ -1,17 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 import { SiteChrome } from "@/components/site-chrome";
 import { createSupabaseBrowserClient } from "@/lib/supabase/browser";
 
 export default function ResetPasswordPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const passwordRecovery = searchParams.get("recovery") === "1";
-  const callbackError = searchParams.get("error");
-
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [pending, setPending] = useState(false);
@@ -24,6 +20,9 @@ export default function ResetPasswordPage() {
     const supabase = createSupabaseBrowserClient();
 
     async function checkRecoverySession() {
+      const params = new URLSearchParams(window.location.search);
+      const passwordRecovery = params.get("recovery") === "1";
+      const callbackError = params.get("error");
       const { data, error } = await supabase.auth.getSession();
       if (!active) return;
 
@@ -58,7 +57,7 @@ export default function ResetPasswordPage() {
       active = false;
       listener.subscription.unsubscribe();
     };
-  }, [callbackError, passwordRecovery]);
+  }, []);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
