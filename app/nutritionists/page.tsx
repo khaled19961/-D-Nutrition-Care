@@ -8,7 +8,7 @@ export default async function NutritionistsPage({ searchParams }: { searchParams
   const supabase = await createSupabaseServerClient();
   const q = (await searchParams)?.q?.trim().toLocaleLowerCase("ar") || "";
   const { data: rawData, error } = await supabase.rpc("list_public_nutritionists");
-  const data = rawData as Array<{
+  const allData = rawData as Array<{
     id: string;
     full_name: string | null;
     years_experience: number | null;
@@ -16,6 +16,9 @@ export default async function NutritionistsPage({ searchParams }: { searchParams
     consultation_fee: number | null;
     currency: string | null;
   }> | null;
+  const data = q
+    ? (allData ?? []).filter((item) => (item.full_name ?? "").toLocaleLowerCase("ar").includes(q))
+    : allData;
 
   return (
     <SiteChrome>
