@@ -5,6 +5,24 @@ import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase/browser";
 
+function getPasswordError(error: { code?: string; message?: string } | null) {
+  if (!error) return "";
+
+  switch (error.code) {
+    case "same_password":
+      return "كلمة المرور الجديدة يجب أن تكون مختلفة عن كلمة المرور الحالية.";
+    case "weak_password":
+      return "كلمة المرور ضعيفة. اختر كلمة مرور أقوى وتأكد من استيفاء متطلبات الأمان.";
+    case "reauthentication_needed":
+      return "يلزم التحقق من هويتك مرة أخرى قبل تغيير كلمة المرور. اطلب رابط استعادة جديداً.";
+    case "flow_state_expired":
+    case "flow_state_not_found":
+      return "انتهت صلاحية رابط الاستعادة. اطلب رابطاً جديداً ثم افتحه من البريد الإلكتروني.";
+    default:
+      return "تعذر تغيير كلمة المرور حالياً. حاول مرة أخرى أو اطلب رابط استعادة جديداً.";
+  }
+}
+
 export default function ResetPasswordPage() {
   const router = useRouter();
   const [password, setPassword] = useState("");
@@ -25,16 +43,13 @@ export default function ResetPasswordPage() {
 
       if (!recovery) {
         if (active) {
-          setError("افتح رابط إعادة تعيين كلمة المرور من بريدك الإلكتروني.");
+          setError("افتح رابط استعادة كلمة المرور من البريد الإلكتروني.");
           setChecking(false);
         }
         return;
       }
 
       try {
-        // The callback deliberately forwards the one-time PKCE code here.
-        // Exchange it in this browser so the PKCE verifier stored when the
-        // reset email was requested can be used and a recovery session is created.
         let sessionError = null;
 
         if (code) {
@@ -55,7 +70,7 @@ export default function ResetPasswordPage() {
         const { data } = await supabase.auth.getSession();
 
         if (sessionError || !data.session) {
-          setError("رابط الاستعادة غير صالح أو منتهي. اطلب رابطاً جديداً.");
+          setError("رابط استعادة كلمة المرور غير صالح أو انتهت صلاحيته. اطلب رابطاً جديداً.");
           setReady(false);
         } else {
           setReady(true);
@@ -83,17 +98,17 @@ export default function ResetPasswordPage() {
     setError("");
 
     if (!ready) {
-      setError("لا توجد جلسة صالحة لإعادة تعيين كلمة المرور.");
+      setError("لا توجد جلسة صالحة لتغيير كلمة المرور. اطلب رابط استعادة جديداً.");
       return;
     }
 
     if (password.length < 8) {
-      setError("كلمة المرور يجب أن تكون 8 أحرف على الأقل.");
+      setError("كلمة المرور يجب أن تحتوي على 8 أحرف أو أكثر.");
       return;
     }
 
     if (password !== confirm) {
-      setError("كلمتا المرور غير متطابقتين.");
+      setError("كلمتا المرور غير متطابقتين. تأكد من إدخالهما بالطريقة نفسها.");
       return;
     }
 
@@ -104,7 +119,7 @@ export default function ResetPasswordPage() {
       await supabase.auth.updateUser({ password });
 
     if (updateError) {
-      setError(updateError.message);
+      setError(getPasswordError(updateError));
       setPending(false);
       return;
     }
@@ -122,7 +137,7 @@ export default function ResetPasswordPage() {
           </h1>
 
           <p className="mt-2 text-[var(--muted)]">
-            اختر كلمة مرور جديدة لحسابك.
+            اختر كلمة مرور جديدة وآمنة لحسابك.
           </p>
 
           {checking ? (
@@ -132,7 +147,7 @@ export default function ResetPasswordPage() {
           ) : !ready ? (
             <div className="mt-8 space-y-4">
               <p
-                className="rounded-xl bg-red-50 p-3 text-sm text-red-700"
+                className="rounded-xl bg-red-50 p-3 text-sm leading-6 text-red-700"
                 role="alert"
               >
                 {error}
@@ -142,7 +157,7 @@ export default function ResetPasswordPage() {
                 href="/auth/forgot-password"
                 className="block w-full rounded-xl bg-[var(--primary)] px-5 py-3 text-center font-bold text-white"
               >
-                طلب رابط جديد
+                طلب رابط استعادة جديد
               </Link>
 
               <Link
@@ -154,31 +169,52 @@ export default function ResetPasswordPage() {
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="mt-8 space-y-5">
-              <input
-                required
-                minLength={8}
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="كلمة المرور الجديدة"
-                autoComplete="new-password"
-                className="w-full rounded-xl border border-[var(--border)] px-4 py-3 outline-none"
-              />
+              <div>
+                <label
+                  htmlFor="new-password"
+                  className="mb-2 block text-sm font-bold"
+                >
+                  كلمة المرور الجديدة
+                </label>
+                <input
+                  id="new-password"
+                  required
+                  minLength={8}
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="أدخل كلمة المرور الجديدة"
+                  autoComplete="new-password"
+                  className="w-full rounded-xl border border-[var(--border)] px-4 py-3 outline-none"
+                />
+                <p className="mt-2 text-xs leading-5 text-[var(--muted)]">
+                  استخدم 8 أحرف أو أكثر واختر كلمة مرور مختلفة عن القديمة.
+                </p>
+              </div>
 
-              <input
-                required
-                minLength={8}
-                type="password"
-                value={confirm}
-                onChange={(e) => setConfirm(e.target.value)}
-                placeholder="تأكيد كلمة المرور"
-                autoComplete="new-password"
-                className="w-full rounded-xl border border-[var(--border)] px-4 py-3 outline-none"
-              />
+              <div>
+                <label
+                  htmlFor="confirm-password"
+                  className="mb-2 block text-sm font-bold"
+                >
+                  تأكيد كلمة المرور
+                </label>
+                <input
+                  id="confirm-password"
+                  required
+                  minLength={8}
+                  type="password"
+                  value={confirm}
+                  onChange={(e) => setConfirm(e.target.value)}
+                  placeholder="أعد كتابة كلمة المرور"
+                  autoComplete="new-password"
+                  className="w-full rounded-xl border border-[var(--border)] px-4 py-3 outline-none"
+                />
+              </div>
 
               {error && (
                 <p
-                  className="rounded-xl bg-red-50 p-3 text-sm text-red-700"
+                  className="rounded-xl bg-red-50 p-3 text-sm leading-6 text-red-700"
                   role="alert"
                 >
                   {error}
@@ -190,7 +226,7 @@ export default function ResetPasswordPage() {
                 disabled={pending}
                 className="w-full rounded-xl bg-[var(--primary)] px-5 py-3 font-bold text-white disabled:opacity-60"
               >
-                {pending ? "جارٍ الحفظ..." : "حفظ كلمة المرور"}
+                {pending ? "جارٍ حفظ كلمة المرور..." : "حفظ كلمة المرور الجديدة"}
               </button>
             </form>
           )}
