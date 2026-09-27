@@ -21,6 +21,7 @@ export default function ResetPasswordPage() {
     async function initialize() {
       const params = new URLSearchParams(window.location.search);
       const recovery = params.get("recovery") === "1";
+      const code = params.get("code");
 
       if (!recovery) {
         if (active) {
@@ -31,13 +32,27 @@ export default function ResetPasswordPage() {
       }
 
       try {
-        const { data, error: sessionError } = await supabase.auth.getSession();
+        // The callback deliberately forwards the one-time PKCE code here.
+        // Exchange it in this browser so the PKCE verifier stored when the
+        // reset email was requested can be used and a recovery session is created.
+        let sessionError = null;
+
+        if (code) {
+          const result = await supabase.auth.exchangeCodeForSession(code);
+          sessionError = result.error;
+        } else {
+          const result = await supabase.auth.getSession();
+          sessionError = result.error;
+        }
 
         const clean = new URL(window.location.href);
         clean.searchParams.delete("recovery");
+        clean.searchParams.delete("code");
         window.history.replaceState({}, "", clean.pathname + clean.search);
 
         if (!active) return;
+
+        const { data } = await supabase.auth.getSession();
 
         if (sessionError || !data.session) {
           setError("رابط الاستعادة غير صالح أو منتهي. اطلب رابطاً جديداً.");
