@@ -2,7 +2,6 @@
 
 import { FormEvent, useState } from "react";
 import Link from "next/link";
-import { SiteChrome } from "@/components/site-chrome";
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState("");
@@ -53,8 +52,7 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <SiteChrome>
-      <main className="min-h-screen bg-[var(--background)] py-12">
+    <main dir="rtl" className="min-h-screen bg-[var(--background)] py-12">
         <div className="container flex min-h-[80vh] items-center justify-center">
           <section className="w-full max-w-md rounded-3xl border border-[var(--border)] bg-white p-8 shadow-sm">
             <Link href="/" className="text-sm font-semibold text-[var(--primary)]">← العودة للموقع</Link>
@@ -88,7 +86,6 @@ export default function AdminLoginPage() {
             </p>
           </section>
         </div>
-      </main>
-    </SiteChrome>
+    </main>
   );
 }
