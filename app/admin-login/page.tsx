@@ -20,6 +20,9 @@ export default function AdminLoginPage() {
     setPending(true);
     setError("");
 
+    if (remember) localStorage.setItem("admin_login_email", email.trim());
+    else localStorage.removeItem("admin_login_email");
+
     const controller = new AbortController();
     const timeoutId = window.setTimeout(() => controller.abort(), 15000);
 
@@ -41,15 +44,12 @@ export default function AdminLoginPage() {
         return;
       }
 
-      setPending(false);
       window.location.replace("/admin");
     } catch (caught) {
       setError(
         caught instanceof DOMException && caught.name === "AbortError"
           ? "انتهت مهلة الاتصال بخدمة تسجيل الدخول. تحقق من اتصال الموقع بـ Supabase ثم حاول مرة أخرى."
-          : caught instanceof Error
-            ? caught.message
-            : "تعذر تسجيل الدخول حالياً."
+          : caught instanceof Error ? caught.message : "تعذر تسجيل الدخول حالياً."
       );
       setPending(false);
     } finally {
@@ -58,50 +58,74 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <main dir="rtl" className="min-h-screen bg-[var(--background)] py-12">
-        <div className="container flex min-h-[80vh] items-center justify-center">
-          <section className="w-full max-w-md rounded-3xl border border-[var(--border)] bg-white p-8 shadow-sm">
-            <Link href="/" className="text-sm font-semibold text-[var(--primary)]">← العودة للموقع</Link>
-            <h1 className="mt-6 text-3xl font-extrabold">بوابة إدارة النظام</h1>
-            <p className="mt-2 text-[var(--muted)]">هذه البوابة مخصصة لمدير النظام فقط.</p>
+    <main dir="rtl" className="admin-login-page">
+      <div className="admin-login-container">
+        <section className="admin-login-card">
+          <Link href="/" className="admin-login-back">
+            <span aria-hidden="true">←</span>
+            العودة للموقع
+          </Link>
 
-            <form onSubmit={handleSubmit} className="mt-8 space-y-5">
-              <label className="block">
-                <span className="mb-2 block font-semibold">البريد الإلكتروني</span>
-                <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)}
-                  className="w-full rounded-xl border border-[var(--border)] px-4 py-3 outline-none focus:border-[var(--primary)]"
-                  autoComplete="username" />
-              </label>
+          <p className="admin-login-kicker">إدارة النظام</p>
+          <h1 className="admin-login-title">بوابة إدارة النظام</h1>
+          <p className="admin-login-description">
+            هذه البوابة مخصصة لمدير النظام فقط.
+          </p>
 
-              <label className="block">
-                <span className="mb-2 block font-semibold">كلمة المرور</span>
-                <input required type="password" value={password} onChange={(e) => setPassword(e.target.value)}
-                  className="w-full rounded-xl border border-[var(--border)] px-4 py-3 outline-none focus:border-[var(--primary)]"
-                  autoComplete="current-password" />
-              </label>
+          <form onSubmit={handleSubmit} className="admin-login-form">
+            <div className="admin-login-field">
+              <label htmlFor="admin-email">البريد الإلكتروني</label>
+              <input
+                id="admin-email"
+                required
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                autoComplete="username"
+              />
+            </div>
 
-              <label className="flex cursor-pointer items-center gap-3 text-sm font-semibold">
-                <input
-                  type="checkbox"
-                  checked={remember}
-                  onChange={(e) => setRemember(e.target.checked)}
-                  className="h-4 w-4 rounded border-[var(--border)] text-[var(--primary)] focus:ring-[var(--primary)]"
-                />
-                <span>تذكر البريد الإلكتروني</span>
-              </label>
+            <div className="admin-login-field">
+              <label htmlFor="admin-password">كلمة المرور</label>
+              <input
+                id="admin-password"
+                required
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                autoComplete="current-password"
+              />
+            </div>
 
-              {error && <p className="rounded-xl bg-red-50 p-3 text-sm text-red-700" role="alert">{error}</p>}
+            <label className="admin-login-remember">
+              <input
+                type="checkbox"
+                checked={remember}
+                onChange={(e) => setRemember(e.target.checked)}
+              />
+              <span>تذكر البريد الإلكتروني</span>
+            </label>
 
-              <button disabled={pending} className="w-full rounded-xl bg-[var(--primary)] px-5 py-3 font-bold text-white disabled:opacity-60">
-                {pending ? "جارٍ الدخول..." : "دخول الإدارة"}
-              </button>
-            </form>
+            {error && (
+              <p className="admin-login-error" role="alert">
+                {error}
+              </p>
+            )}
 
-            <p className="mt-6 text-center text-sm text-[var(--muted)]">
-              للأخصائيين والموظفين ستكون هناك بوابات وصلاحيات مستقلة.
-            </p>
-          </section>
-        </div>
+            <button
+              type="submit"
+              disabled={pending}
+              className="admin-login-submit"
+            >
+              {pending ? "جارٍ الدخول..." : "دخول الإدارة"}
+            </button>
+          </form>
+
+          <p className="admin-login-note">
+            للأخصائيين والموظفين ستكون هناك بوابات وصلاحيات مستقلة.
+          </p>
+        </section>
+      </div>
     </main>
   );
 }
