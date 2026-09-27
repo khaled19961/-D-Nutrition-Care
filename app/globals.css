@@ -424,7 +424,7 @@ h1,h2,h3,h4,h5,h6,p,span,a,button,label{overflow-wrap:anywhere}
 .home-hero-fixed{display:grid;grid-column:1;grid-template-columns:1fr;grid-template-rows:repeat(2,minmax(0,1fr));gap:8px;direction:ltr;min-width:0}
 .home-hero-fixed-banner,.home-hero-slide{display:block;position:relative;overflow:hidden;border-radius:6px;background:#eef3e9;min-width:0}
 .home-hero-fixed-banner{aspect-ratio:auto;min-height:0;width:100%;height:100%;justify-self:stretch}
-.home-hero-fixed-banner img{display:block;width:100%;height:100%;object-fit:cover}.home-hero-slide img{display:block;width:100%;height:100%;object-fit:contain;background:#fff}
+.home-hero-fixed-banner img{display:block;width:100%;height:100%;object-fit:contain;background:#fff}.home-hero-slide img{display:block;width:100%;height:100%;object-fit:contain;background:#fff}
 .home-hero-slider{grid-column:2;overflow:hidden;border-radius:6px;min-width:0;direction:ltr;aspect-ratio:16/11.2;align-self:stretch;height:auto}
 .home-hero-slider-track{display:flex;width:max-content;height:100%;animation:homeHeroSlideLTR 12s cubic-bezier(.55,0,.35,1) 3s infinite;direction:ltr}
 .home-hero-slide{width:100%;height:100%;aspect-ratio:16/11.2;flex:none}
