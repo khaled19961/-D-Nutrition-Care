@@ -65,7 +65,7 @@ export async function SiteChrome({ children }: { children: React.ReactNode }) {
           <div><Link href="/" className="brand footer-brand">{siteLogo ? <img src={siteLogo} alt={siteName} className="brand-logo" /> : <span className="brand-mark">D</span>}<span><strong>{siteName}</strong><small>CARE</small></span></Link><p>{tagline}</p></div>
           <div><h4>الخدمات</h4><Link href="/categories">الفئات</Link><Link href="/nutritionists">الأخصائيون</Link><Link href="/booking">الحجز</Link></div>
           <div><h4>المحتوى</h4><Link href="/articles">المقالات</Link><Link href="/programs">البرامج</Link><Link href="/about">من نحن</Link></div>
-          <div><h4>المساعدة</h4><Link href="/more#faq">الأسئلة الشائعة</Link><Link href="/more#contact">تواصل معنا</Link><Link href="/more#policies">السياسات</Link></div>
+          <div><h4>المساعدة</h4><Link href="/more#faq">الأسئلة الشائعة</Link><Link href="/more#contact">تواصل معنا</Link><Link href="/more#policies">السياسات</Link><Link href="/admin-login">دخول الإدارة</Link></div>
         </div>
         <div className="container footer-bottom"><span>© {siteName}</span><span>{tagline}</span></div>
       </footer>
