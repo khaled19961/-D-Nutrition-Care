@@ -4,6 +4,8 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export async function SiteChrome({ children }: { children: React.ReactNode }) {
   const supabase = await createSupabaseServerClient();
+  const { data: claims } = await supabase.auth.getClaims();
+  const isSignedIn = Boolean(claims?.claims?.sub);
   const { data: settings } = await supabase.from("site_settings").select("setting_key,setting_value");
   const values = Object.fromEntries((settings ?? []).map((item) => [item.setting_key, typeof item.setting_value === "string" ? item.setting_value : JSON.stringify(item.setting_value)]));
   const siteName = values.site_name?.replace(/^"|"$/g, "") || "D-Nutrition-Care";
@@ -38,6 +40,16 @@ export async function SiteChrome({ children }: { children: React.ReactNode }) {
               <input name="q" aria-label="ابحث عن أخصائي تغذية" placeholder="ابحث عن أخصائي" />
               <button type="submit">بحث</button>
             </form>
+            <div className="header-account-links" aria-label="حساب العميل">
+              {isSignedIn ? (
+                <Link href="/dashboard" className="header-account-link">حسابي</Link>
+              ) : (
+                <>
+                  <Link href="/auth/login" className="header-account-link">تسجيل الدخول</Link>
+                  <Link href="/auth/register" className="header-account-link header-account-register">إنشاء حساب</Link>
+                </>
+              )}
+            </div>
             <Link href="/booking" className="primary-btn">احجز استشارتك</Link>
           </div>
         </div>
