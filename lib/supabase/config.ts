@@ -1,9 +1,10 @@
-export function getSupabaseUrl() {
-  const raw = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
+const DEFAULT_SUPABASE_URL = "https://mhmbtlirintgcabscptj.supabase.co";
+const DEFAULT_SUPABASE_PUBLISHABLE_KEY = "sb_publishable_F7HJAJzIOziy9ImGhlOqCg_3J_4q07o";
 
-  if (!raw) {
-    throw new Error("NEXT_PUBLIC_SUPABASE_URL is not configured.");
-  }
+export function getSupabaseUrl() {
+  const raw =
+    process.env.NEXT_PUBLIC_SUPABASE_URL?.trim() ||
+    DEFAULT_SUPABASE_URL;
 
   // Supabase clients expect the project root, not /rest/v1 or /auth/v1.
   // Normalize common misconfigurations so Cloudflare deployments do not
@@ -20,12 +21,9 @@ export function getSupabaseUrl() {
 
 export function getSupabaseKey() {
   const key =
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-  if (!key) {
-    throw new Error("Supabase publishable/anon key is not configured.");
-  }
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY?.trim() ||
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim() ||
+    DEFAULT_SUPABASE_PUBLISHABLE_KEY;
 
   return key;
 }
