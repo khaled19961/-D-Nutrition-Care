@@ -20,7 +20,6 @@ export default function ResetPasswordPage() {
 
     async function initialize() {
       const params = new URLSearchParams(window.location.search);
-      const code = params.get("code");
       const recovery = params.get("recovery") === "1";
 
       if (!recovery) {
@@ -32,19 +31,11 @@ export default function ResetPasswordPage() {
       }
 
       try {
-        if (code) {
-          const { error: exchangeError } =
-            await supabase.auth.exchangeCodeForSession(code);
-
-          if (exchangeError) throw exchangeError;
-
-          const clean = new URL(window.location.href);
-          clean.searchParams.delete("code");
-          clean.searchParams.delete("recovery");
-          window.history.replaceState({}, "", clean.pathname + clean.search);
-        }
-
         const { data, error: sessionError } = await supabase.auth.getSession();
+
+        const clean = new URL(window.location.href);
+        clean.searchParams.delete("recovery");
+        window.history.replaceState({}, "", clean.pathname + clean.search);
 
         if (!active) return;
 
