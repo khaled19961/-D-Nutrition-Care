@@ -181,23 +181,6 @@ export default function AuthLoginForm() {
     }
   }
 
-  async function oauth(provider: "google" | "apple") {
-    setPending(true);
-    setError("");
-    try {
-      const redirectUrl = new URL("/auth/callback", window.location.origin);
-      redirectUrl.searchParams.set("next", next);
-      const result = await supabase.auth.signInWithOAuth({
-        provider,
-        options: { redirectTo: redirectUrl.toString() }
-      });
-      if (result.error) setError(authErrorMessage(result.error));
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "تعذر بدء تسجيل الدخول بالحساب الخارجي.");
-    } finally {
-      setPending(false);
-    }
-  }
 
   return (
     <main className="auth-page" dir="rtl">
@@ -231,11 +214,6 @@ export default function AuthLoginForm() {
               <button type="button" onClick={resendConfirmation} disabled={pending}>إعادة إرسال تأكيد البريد</button>
             </div>
 
-            <div className="auth-divider"><span>أو تابع باستخدام</span></div>
-            <div className="auth-socials">
-              <button type="button" onClick={() => oauth("apple")} disabled={pending}><span className="auth-apple">●</span> Apple</button>
-              <button type="button" onClick={() => oauth("google")} disabled={pending}><span className="auth-google">G</span> Google</button>
-            </div>
           </form>
         ) : (
           <form onSubmit={register} className="auth-form">
@@ -248,11 +226,6 @@ export default function AuthLoginForm() {
             {error && <p className="auth-error" role="alert">{error}</p>}
             {message && <p className="auth-success" role="status">{message}</p>}
             <button className="auth-primary" disabled={pending}>{pending ? "جارٍ إنشاء الحساب..." : "إنشاء الحساب"}</button>
-            <div className="auth-divider"><span>أو تابع باستخدام</span></div>
-            <div className="auth-socials">
-              <button type="button" onClick={() => oauth("apple")} disabled={pending}><span className="auth-apple">●</span> Apple</button>
-              <button type="button" onClick={() => oauth("google")} disabled={pending}><span className="auth-google">G</span> Google</button>
-            </div>
           </form>
         )}
 
