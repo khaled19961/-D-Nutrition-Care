@@ -8,8 +8,13 @@ function safeNextPath(value: string | null) {
   return value;
 }
 
-function loginError(url: URL, code: string) {
-  return NextResponse.redirect(new URL("/auth/login?error=" + encodeURIComponent(code), url.origin));
+function redirectError(url: URL, code: string, next: string | null) {
+  const isRecovery = next === "/auth/reset-password";
+  const target = isRecovery ? "/auth/reset-password" : "/auth/login";
+  const result = new URL(target, url.origin);
+  result.searchParams.set("error", code);
+  if (isRecovery) result.searchParams.set("recovery", "1");
+  return NextResponse.redirect(result);
 }
 
 export async function GET(request: Request) {
@@ -17,28 +22,49 @@ export async function GET(request: Request) {
   const code = url.searchParams.get("code");
   const tokenHash = url.searchParams.get("token_hash");
   const type = url.searchParams.get("type") as EmailOtpType | null;
-  const next = safeNextPath(url.searchParams.get("next"));
+  const nextRaw = url.searchParams.get("next");
+  const next = safeNextPath(nextRaw);
+
+  const providerError =
+    url.searchParams.get("error_description") ||
+    url.searchParams.get("error");
+
+  if (providerError) {
+    return redirectError(url, "auth_callback", nextRaw);
+  }
 
   const supabase = await createSupabaseServerClient();
 
-  // PKCE email links (including password recovery) return a code.
+  // PKCE links, including password recovery, return a one-time code.
   if (code) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (error) return loginError(url, "auth_callback");
+    if (error) return redirectError(url, "auth_callback", nextRaw);
+
+    if (next === "/auth/reset-password") {
+      const recoveryUrl = new URL(next, url.origin);
+      recoveryUrl.searchParams.set("recovery", "1");
+      return NextResponse.redirect(recoveryUrl);
+    }
+
     return NextResponse.redirect(new URL(next, url.origin));
   }
 
-  // Custom email templates can return a token hash + type instead.
-  // Supporting both prevents recovery/confirmation links from falling back
-  // to the login page when the template uses {{ .TokenHash }}.
+  // Custom email templates may use TokenHash instead of ConfirmationURL.
   if (tokenHash && type) {
     const { error } = await supabase.auth.verifyOtp({
       token_hash: tokenHash,
       type,
     });
-    if (error) return loginError(url, "auth_callback");
+    if (error) return redirectError(url, "auth_callback", nextRaw);
+
+    if (next === "/auth/reset-password") {
+      const recoveryUrl = new URL(next, url.origin);
+      recoveryUrl.searchParams.set("recovery", "1");
+      return NextResponse.redirect(recoveryUrl);
+    }
+
     return NextResponse.redirect(new URL(next, url.origin));
   }
 
-  return loginError(url, "missing_code");
+  return redirectError(url, "missing_code", nextRaw);
 }
