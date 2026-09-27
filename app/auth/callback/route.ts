@@ -42,6 +42,24 @@ export async function GET(request: Request) {
     const supabase = await createSupabaseServerClient();
 
     if (code) {
+      // Password recovery is completed by the browser so the PKCE verifier
+      // created by the browser remains available. The callback only forwards
+      // the one-time code to the reset page; the browser client then exchanges it.
+      if (next === "/auth/reset-password") {
+        const target = new URL(next, url.origin);
+        target.searchParams.set("recovery", "1");
+        target.searchParams.set("code", code);
+
+        const forwardedHost = request.headers.get("x-forwarded-host");
+        const targetOrigin =
+          forwardedHost && !forwardedHost.includes(",")
+            ? `https://${forwardedHost}`
+            : url.origin;
+
+        const targetUrl = new URL(target.pathname + target.search, targetOrigin);
+        return redirectWithNoStore(NextResponse.redirect(targetUrl));
+      }
+
       const { error } = await supabase.auth.exchangeCodeForSession(code);
       if (error) {
         return redirectWithNoStore(redirectError(url, "auth_callback", nextRaw));
