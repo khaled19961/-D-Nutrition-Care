@@ -1,15 +1,16 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import Link from "next/link";
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [remember, setRemember] = useState(true);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  useEffect(() => {\n    const savedEmail = localStorage.getItem("admin_login_email");\n    if (savedEmail) setEmail(savedEmail);\n  }, []);\n\n  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setPending(true);
     setError("");
@@ -74,7 +75,7 @@ export default function AdminLoginPage() {
                   autoComplete="current-password" />
               </label>
 
-              {error && <p className="rounded-xl bg-red-50 p-3 text-sm text-red-700">{error}</p>}
+              <label className="flex cursor-pointer items-center gap-3 text-sm font-semibold">\n                <input\n                  type="checkbox"\n                  checked={remember}\n                  onChange={(e) => setRemember(e.target.checked)}\n                  className="h-4 w-4 rounded border-[var(--border)] text-[var(--primary)] focus:ring-[var(--primary)]"\n                />\n                <span>تذكر البريد الإلكتروني</span>\n              </label>\n\n              {error && <p className="rounded-xl bg-red-50 p-3 text-sm text-red-700" role="alert">{error}</p>}
 
               <button disabled={pending} className="w-full rounded-xl bg-[var(--primary)] px-5 py-3 font-bold text-white disabled:opacity-60">
                 {pending ? "جارٍ الدخول..." : "دخول الإدارة"}
