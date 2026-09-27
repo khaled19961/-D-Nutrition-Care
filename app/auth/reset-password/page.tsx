@@ -1,13 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 import { SiteChrome } from "@/components/site-chrome";
 import { createSupabaseBrowserClient } from "@/lib/supabase/browser";
 
 export default function ResetPasswordPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const passwordRecovery = searchParams.get("recovery") === "1";
+  const callbackError = searchParams.get("error");
+
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [pending, setPending] = useState(false);
@@ -24,10 +28,17 @@ export default function ResetPasswordPage() {
       if (!active) return;
 
       if (error || !data.session) {
-        setError("رابط إعادة تعيين كلمة المرور غير صالح أو منتهي. اطلب رابطاً جديداً ثم افتحه من بريدك الإلكتروني.");
+        setError(
+          callbackError === "auth_callback"
+            ? "تعذر التحقق من رابط الاستعادة. اطلب رابطاً جديداً ثم افتحه من نفس المتصفح الذي طلبت منه الاستعادة."
+            : "رابط إعادة تعيين كلمة المرور غير صالح أو منتهي. اطلب رابطاً جديداً ثم افتحه من بريدك الإلكتروني."
+        );
         setReady(false);
-      } else {
+      } else if (passwordRecovery) {
         setReady(true);
+      } else {
+        setError("افتح رابط إعادة تعيين كلمة المرور من بريدك الإلكتروني للمتابعة.");
+        setReady(false);
       }
       setCheckingSession(false);
     }
@@ -47,7 +58,7 @@ export default function ResetPasswordPage() {
       active = false;
       listener.subscription.unsubscribe();
     };
-  }, []);
+  }, [callbackError, passwordRecovery]);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
