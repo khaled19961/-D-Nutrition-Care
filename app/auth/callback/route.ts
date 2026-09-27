@@ -17,6 +17,11 @@ function redirectError(url: URL, code: string, next: string | null) {
   return NextResponse.redirect(result);
 }
 
+function redirectWithNoStore(response: NextResponse) {
+  response.headers.set("Cache-Control", "private, no-store");
+  return response;
+}
+
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const code = url.searchParams.get("code");
@@ -30,41 +35,51 @@ export async function GET(request: Request) {
     url.searchParams.get("error");
 
   if (providerError) {
-    return redirectError(url, "auth_callback", nextRaw);
+    return redirectWithNoStore(redirectError(url, "auth_callback", nextRaw));
   }
 
-  const supabase = await createSupabaseServerClient();
+  try {
+    const supabase = await createSupabaseServerClient();
 
-  // PKCE links, including password recovery, return a one-time code.
-  if (code) {
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (error) return redirectError(url, "auth_callback", nextRaw);
+    if (code) {
+      const { error } = await supabase.auth.exchangeCodeForSession(code);
+      if (error) {
+        return redirectWithNoStore(redirectError(url, "auth_callback", nextRaw));
+      }
 
-    if (next === "/auth/reset-password") {
-      const recoveryUrl = new URL(next, url.origin);
-      recoveryUrl.searchParams.set("recovery", "1");
-      return NextResponse.redirect(recoveryUrl);
+      const target = new URL(next, url.origin);
+      if (next === "/auth/reset-password") {
+        target.searchParams.set("recovery", "1");
+      }
+
+      const forwardedHost = request.headers.get("x-forwarded-host");
+      const targetOrigin =
+        forwardedHost && !forwardedHost.includes(",")
+          ? `https://${forwardedHost}`
+          : url.origin;
+
+      const targetUrl = new URL(target.pathname + target.search, targetOrigin);
+      return redirectWithNoStore(NextResponse.redirect(targetUrl));
     }
 
-    return NextResponse.redirect(new URL(next, url.origin));
-  }
+    if (tokenHash && type) {
+      const { error } = await supabase.auth.verifyOtp({
+        token_hash: tokenHash,
+        type,
+      });
+      if (error) {
+        return redirectWithNoStore(redirectError(url, "auth_callback", nextRaw));
+      }
 
-  // Custom email templates may use TokenHash instead of ConfirmationURL.
-  if (tokenHash && type) {
-    const { error } = await supabase.auth.verifyOtp({
-      token_hash: tokenHash,
-      type,
-    });
-    if (error) return redirectError(url, "auth_callback", nextRaw);
-
-    if (next === "/auth/reset-password") {
-      const recoveryUrl = new URL(next, url.origin);
-      recoveryUrl.searchParams.set("recovery", "1");
-      return NextResponse.redirect(recoveryUrl);
+      const target = new URL(next, url.origin);
+      if (next === "/auth/reset-password") {
+        target.searchParams.set("recovery", "1");
+      }
+      return redirectWithNoStore(NextResponse.redirect(target));
     }
 
-    return NextResponse.redirect(new URL(next, url.origin));
+    return redirectWithNoStore(redirectError(url, "missing_code", nextRaw));
+  } catch {
+    return redirectWithNoStore(redirectError(url, "auth_callback", nextRaw));
   }
-
-  return redirectError(url, "missing_code", nextRaw);
 }
