@@ -140,7 +140,7 @@ export default function AuthLoginForm() {
 
     setPending(true);
     try {
-      const type = otpPurpose === "register" ? "signup" : "email";
+      const type = "email";
       const result = await supabase.auth.verifyOtp({ email: otpEmail, token, type });
       if (result.error) {
         setError(authErrorMessage(result.error));
