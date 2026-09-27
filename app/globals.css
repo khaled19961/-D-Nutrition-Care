@@ -426,9 +426,9 @@ h1,h2,h3,h4,h5,h6,p,span,a,button,label{overflow-wrap:anywhere}
 .home-hero-fixed-banner{aspect-ratio:auto;min-height:0;width:100%;height:100%;justify-self:stretch}
 .home-hero-fixed-banner img{display:block;width:100%;height:100%;object-fit:contain;background:#fff}.home-hero-slide img{display:block;width:100%;height:100%;object-fit:contain;background:#fff}
 .home-hero-slider{grid-column:2;overflow:hidden;border-radius:6px;min-width:0;direction:ltr;aspect-ratio:16/12.88;align-self:stretch;height:auto}
-.home-hero-slider-track{display:flex;width:max-content;height:100%;animation:homeHeroSlideLTR 12s cubic-bezier(.55,0,.35,1) 3s infinite;direction:ltr}
-.home-hero-slide{width:100%;height:100%;aspect-ratio:16/12.88;flex:none}
+.home-hero-slider-track{display:flex;width:1600%;height:100%;animation:homeHeroSlideLTR 48s cubic-bezier(.55,0,.35,1) 2s infinite;direction:ltr}
+.home-hero-slide{width:6.25%;height:100%;aspect-ratio:16/12.88;flex:0 0 6.25%}
 .home-hero-layout .home-main-banner-caption{padding:20px}
-@keyframes homeHeroSlideLTR{0%,25%{transform:translateX(calc(-50% + 1px))}45%,55%{transform:translateX(calc(-50% + 1px))}75%,100%{transform:translateX(0)}}
+@keyframes homeHeroSlideLTR{0%,10%{transform:translateX(0)}12%,22%{transform:translateX(-6.25%)}24%,34%{transform:translateX(-12.5%)}36%,46%{transform:translateX(-18.75%)}48%,58%{transform:translateX(-25%)}60%,70%{transform:translateX(-31.25%)}72%,82%{transform:translateX(-37.5%)}84%,94%{transform:translateX(-43.75%)}96%,100%{transform:translateX(0)}}
 @media(max-width:800px){.home-hero-layout{grid-template-columns:1fr;direction:rtl;width:100%;margin:0}.home-hero-fixed{grid-column:1;grid-row:2;grid-template-columns:1fr;grid-template-rows:repeat(2,minmax(0,1fr));gap:6px}.home-hero-fixed-banner{height:100%;aspect-ratio:auto}.home-hero-slider{grid-column:1;grid-row:1;aspect-ratio:16/9.9;height:auto;align-self:stretch}.home-hero-slide{width:100%;max-width:100%;aspect-ratio:16/9}}
 @media(prefers-reduced-motion:reduce){.home-hero-slider-track{animation:none}.home-hero-slide:not(:first-child){display:none}}
