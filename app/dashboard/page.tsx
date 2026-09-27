@@ -50,7 +50,7 @@ export default async function DashboardPage() {
         <div className="mt-8 grid gap-5 md:grid-cols-3">
           <DashboardCard href="/dashboard/appointments" title="مواعيدي" text="عرض وإدارة مواعيد الاستشارات." />
           <DashboardCard href="/dashboard/programs" title="برامجي الغذائية" text="متابعة البرامج والخطط المسندة إليك." />
-          <DashboardCard href="/dashboard/progress" title="تقدمي" text="الوزن والقياسات وسجل التقدم." />
+          <DashboardCard href="/dashboard/progress" title="تقدمي" text="الوزن والقياسات وسجل التقدم." />\n          <DashboardCard href="/store/orders" title="طلباتي" text="متابعة طلبات المتجر وحالاتها." />
         </div>
 
         <section className="mt-8 rounded-3xl border border-[var(--border)] bg-white p-6">
