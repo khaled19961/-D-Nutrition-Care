@@ -39,8 +39,6 @@ export async function GET(request: Request) {
   }
 
   try {
-    const supabase = await createSupabaseServerClient();
-
     if (code) {
       // Recovery PKCE must be exchanged by the browser that requested the
       // reset email because the verifier is stored in browser storage.
@@ -50,13 +48,7 @@ export async function GET(request: Request) {
         target.searchParams.set("recovery", "1");
         target.searchParams.set("code", code);
 
-        const forwardedHost = request.headers.get("x-forwarded-host");
-        const targetOrigin =
-          forwardedHost && !forwardedHost.includes(",")
-            ? `https://${forwardedHost}`
-            : url.origin;
-
-        const targetUrl = new URL(target.pathname + target.search, targetOrigin);
+        const targetUrl = new URL(target.pathname + target.search, url.origin);
         return redirectWithNoStore(NextResponse.redirect(targetUrl));
       }
 
@@ -66,17 +58,12 @@ export async function GET(request: Request) {
       }
 
       const target = new URL(next, url.origin);
-      const forwardedHost = request.headers.get("x-forwarded-host");
-      const targetOrigin =
-        forwardedHost && !forwardedHost.includes(",")
-          ? `https://${forwardedHost}`
-          : url.origin;
-
-      const targetUrl = new URL(target.pathname + target.search, targetOrigin);
+      const targetUrl = new URL(target.pathname + target.search, url.origin);
       return redirectWithNoStore(NextResponse.redirect(targetUrl));
     }
 
     if (tokenHash && type) {
+      const supabase = await createSupabaseServerClient();
       const { error } = await supabase.auth.verifyOtp({
         token_hash: tokenHash,
         type,
