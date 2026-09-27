@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { getSupabaseUrl } from "@/lib/supabase/config";
 
 export default function RecoveryIntermediaryPage() {
   const [starting, setStarting] = useState(false);
@@ -16,9 +17,7 @@ export default function RecoveryIntermediaryPage() {
 
     try {
       const url = new URL(raw);
-      const supabaseUrl = new URL(
-        process.env.NEXT_PUBLIC_SUPABASE_URL || ""
-      );
+      const supabaseUrl = new URL(getSupabaseUrl());
 
       // Only allow the Supabase Auth verification endpoint generated for
       // this project. Never navigate to an arbitrary URL from the query.
