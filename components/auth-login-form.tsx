@@ -2,7 +2,7 @@
 
 import { FormEvent, useMemo, useState } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { createSupabaseBrowserClient } from "@/lib/supabase/browser";
 
 type Mode = "login" | "register";
@@ -16,7 +16,7 @@ function safeNextPath(value: string | null) {
 function authErrorMessage(error: { code?: string; message?: string }) {
   switch (error.code) {
     case "invalid_credentials": return "بيانات الدخول غير صحيحة.";
-    case "email_not_confirmed": return "يجب تأكيد البريد الإلكتروني أولاً.";
+    case "email_not_confirmed": return "يجب تأكيد البريد الإلكتروني أولاً. يمكنك طلب رسالة تأكيد جديدة.";
     case "user_already_exists": return "يوجد حساب بهذه البيانات بالفعل. جرّب تسجيل الدخول.";
     case "email_address_invalid": return "البريد الإلكتروني غير صحيح.";
     case "phone_exists": return "رقم الهاتف مستخدم بالفعل.";
@@ -38,12 +38,14 @@ function getIdentifierType(value: string): IdentifierType | null {
 
 export default function AuthLoginForm() {
   const router = useRouter();
+  const pathname = usePathname();
   const sp = useSearchParams();
   const next = safeNextPath(sp.get("next"));
-  const requestedMode = sp.get("mode") === "register" ? "register" : "login";
+  const pathMode: Mode = pathname === "/auth/register" ? "register" : "login";
+  const requestedMode = sp.get("mode") === "register" ? "register" : pathMode;
   const [mode, setMode] = useState<Mode>(requestedMode);
   const [identifier, setIdentifier] = useState("");
-  const [code, setCode] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
@@ -51,8 +53,6 @@ export default function AuthLoginForm() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [pending, setPending] = useState(false);
-  const [verificationSent, setVerificationSent] = useState(false);
-  const [verificationType, setVerificationType] = useState<IdentifierType>("email");
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
 
@@ -62,62 +62,74 @@ export default function AuthLoginForm() {
     setMode(nextMode);
     setError("");
     setMessage("");
-    setVerificationSent(false);
-    setCode("");
+    setIdentifier("");
+    setLoginPassword("");
     const url = new URL(window.location.href);
     url.searchParams.set("mode", nextMode);
     window.history.replaceState(null, "", url.toString());
   }
 
-  async function sendVerification(e: FormEvent<HTMLFormElement>) {
+  async function login(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const value = identifier.trim();
     const type = getIdentifierType(value);
     setError("");
     setMessage("");
+
     if (!type) {
       setError("أدخل بريداً إلكترونياً صحيحاً أو رقم هاتف بصيغة صحيحة.");
       return;
     }
+    if (!loginPassword) {
+      setError("أدخل كلمة المرور.");
+      return;
+    }
+
     setPending(true);
     try {
       const result = type === "email"
-        ? await supabase.auth.signInWithOtp({ email: value, options: { shouldCreateUser: false } })
-        : await supabase.auth.signInWithOtp({ phone: value, options: { shouldCreateUser: false } });
+        ? await supabase.auth.signInWithPassword({ email: value, password: loginPassword })
+        : await supabase.auth.signInWithPassword({ phone: value, password: loginPassword });
+
       if (result.error) {
         setError(authErrorMessage(result.error));
         return;
       }
-      setVerificationType(type);
-      setVerificationSent(true);
-      setMessage(type === "email" ? "تم إرسال رمز التحقق إلى بريدك الإلكتروني." : "تم إرسال رمز التحقق إلى رقم هاتفك.");
+
+      router.replace(next);
+      router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "تعذر إرسال رمز التحقق حالياً.");
+      setError(err instanceof Error ? err.message : "تعذر تسجيل الدخول حالياً.");
     } finally {
       setPending(false);
     }
   }
 
-  async function verifyCode(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    if (!/^\d{6}$/.test(code.trim())) {
-      setError("أدخل رمز التحقق المكوّن من 6 أرقام.");
+  async function resendConfirmation() {
+    const value = identifier.trim();
+    if (getIdentifierType(value) !== "email") {
+      setError("لإعادة إرسال التأكيد، أدخل البريد الإلكتروني المرتبط بالحساب.");
       return;
     }
+
     setPending(true);
     setError("");
+    setMessage("");
     try {
-      const result = verificationType === "email"
-        ? await supabase.auth.verifyOtp({ email: identifier.trim(), token: code.trim(), type: "email" })
-        : await supabase.auth.verifyOtp({ phone: identifier.trim(), token: code.trim(), type: "sms" });
+      const result = await supabase.auth.resend({
+        type: "signup",
+        email: value,
+        options: {
+          emailRedirectTo: window.location.origin + "/auth/callback?next=" + encodeURIComponent(next)
+        }
+      });
       if (result.error) {
         setError(authErrorMessage(result.error));
         return;
       }
-      router.replace(next);
-      router.refresh();
+      setMessage("تم طلب رسالة تأكيد جديدة. افحص البريد الوارد ومجلد الرسائل غير المرغوب فيها.");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "تعذر التحقق من الرمز حالياً.");
+      setError(err instanceof Error ? err.message : "تعذر إعادة إرسال رسالة التأكيد.");
     } finally {
       setPending(false);
     }
@@ -127,22 +139,17 @@ export default function AuthLoginForm() {
     e.preventDefault();
     setError("");
     setMessage("");
-    if (password.length < 8) {
-      setError("كلمة المرور يجب ألا تقل عن 8 أحرف.");
-      return;
-    }
-    if (password !== confirmPassword) {
-      setError("تأكيد كلمة المرور غير مطابق.");
-      return;
-    }
-    if (!acceptedTerms) {
-      setError("يجب الموافقة على الشروط والأحكام وسياسة الخصوصية.");
-      return;
-    }
+
+    if (!email.trim()) return setError("أدخل البريد الإلكتروني.");
+    if (password.length < 8) return setError("كلمة المرور يجب ألا تقل عن 8 أحرف.");
+    if (password !== confirmPassword) return setError("تأكيد كلمة المرور غير مطابق.");
+    if (!acceptedTerms) return setError("يجب الموافقة على الشروط والأحكام وسياسة الخصوصية.");
+
     setPending(true);
     try {
       const redirectUrl = new URL("/auth/callback", window.location.origin);
       redirectUrl.searchParams.set("next", next);
+
       const result = await supabase.auth.signUp({
         email: email.trim(),
         password,
@@ -151,16 +158,22 @@ export default function AuthLoginForm() {
           emailRedirectTo: redirectUrl.toString()
         }
       });
+
       if (result.error) {
         setError(authErrorMessage(result.error));
         return;
       }
+
       if (result.data.session) {
         router.replace(next);
         router.refresh();
         return;
       }
+
       setMessage("تم إنشاء الحساب. راجع بريدك الإلكتروني واضغط رابط التأكيد ثم سجّل الدخول.");
+      setIdentifier(email.trim());
+      setMode("login");
+      setLoginPassword("");
     } catch (err) {
       setError(err instanceof Error ? err.message : "تعذر إنشاء الحساب حالياً.");
     } finally {
@@ -198,34 +211,32 @@ export default function AuthLoginForm() {
         </div>
 
         {mode === "login" ? (
-          verificationSent ? (
-            <form onSubmit={verifyCode} className="auth-form">
-              <div className="auth-code-heading">
-                <h1>أدخل رمز التحقق</h1>
-                <p>{verificationType === "email" ? "أرسلنا الرمز إلى بريدك الإلكتروني." : "أرسلنا الرمز إلى رقم هاتفك."}</p>
-              </div>
-              <label><span>رمز التحقق</span><input required inputMode="numeric" maxLength={6} value={code} onChange={e => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))} placeholder="000000" autoComplete="one-time-code" /></label>
-              {error && <p className="auth-error" role="alert">{error}</p>}
-              {message && <p className="auth-success" role="status">{message}</p>}
-              <button className="auth-primary" disabled={pending}>{pending ? "جارٍ التحقق..." : "تحقق ودخول"}</button>
-              <div className="auth-code-actions">
-                <button type="button" onClick={() => { setVerificationSent(false); setCode(""); setMessage(""); setError(""); }}>تغيير البريد أو رقم الهاتف</button>
-                <button type="button" onClick={() => { setVerificationSent(false); setMessage(""); setCode(""); }}>إرسال رمز جديد</button>
-              </div>
-            </form>
-          ) : (
-            <form onSubmit={sendVerification} className="auth-form">
-              <label><span>البريد الإلكتروني أو رقم الهاتف</span><input required value={identifier} onChange={e => setIdentifier(e.target.value)} placeholder="أدخل البريد الإلكتروني أو رقم الهاتف" autoComplete="username" /></label>
-              {error && <p className="auth-error" role="alert">{error}</p>}
-              {message && <p className="auth-success" role="status">{message}</p>}
-              <button className="auth-primary" disabled={pending}>{pending ? "جارٍ إرسال الرمز..." : "إرسال رمز التحقق"}</button>
-              <div className="auth-divider"><span>أو تابع باستخدام</span></div>
-              <div className="auth-socials">
-                <button type="button" onClick={() => oauth("apple")} disabled={pending}><span className="auth-apple">●</span> Apple</button>
-                <button type="button" onClick={() => oauth("google")} disabled={pending}><span className="auth-google">G</span> Google</button>
-              </div>
-            </form>
-          )
+          <form onSubmit={login} className="auth-form">
+            <label>
+              <span>البريد الإلكتروني أو رقم الهاتف</span>
+              <input required value={identifier} onChange={e => setIdentifier(e.target.value)} placeholder="أدخل البريد الإلكتروني أو رقم الهاتف" autoComplete="username" />
+            </label>
+            <label>
+              <span>كلمة المرور</span>
+              <input required type="password" value={loginPassword} onChange={e => setLoginPassword(e.target.value)} placeholder="أدخل كلمة المرور" autoComplete="current-password" />
+            </label>
+
+            {error && <p className="auth-error" role="alert">{error}</p>}
+            {message && <p className="auth-success" role="status">{message}</p>}
+
+            <button className="auth-primary" disabled={pending}>{pending ? "جارٍ تسجيل الدخول..." : "تسجيل الدخول"}</button>
+
+            <div className="auth-login-links">
+              <Link href="/auth/forgot-password">نسيت كلمة المرور؟</Link>
+              <button type="button" onClick={resendConfirmation} disabled={pending}>إعادة إرسال تأكيد البريد</button>
+            </div>
+
+            <div className="auth-divider"><span>أو تابع باستخدام</span></div>
+            <div className="auth-socials">
+              <button type="button" onClick={() => oauth("apple")} disabled={pending}><span className="auth-apple">●</span> Apple</button>
+              <button type="button" onClick={() => oauth("google")} disabled={pending}><span className="auth-google">G</span> Google</button>
+            </div>
+          </form>
         ) : (
           <form onSubmit={register} className="auth-form">
             <label><span>الاسم الكامل</span><input required value={name} onChange={e => setName(e.target.value)} placeholder="أدخل الاسم الكامل" autoComplete="name" /></label>
