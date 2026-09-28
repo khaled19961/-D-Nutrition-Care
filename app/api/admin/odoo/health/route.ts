@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { isOdooConfigured, odooHealthCheck } from "@/lib/odoo/client";
+import { isOdooConfigured, odooHealthCheck, searchOdooProducts } from "@/lib/odoo/client";
 
 export const dynamic = "force-dynamic";
 
@@ -31,11 +31,22 @@ export async function GET() {
   }
 
   try {
-    await odooHealthCheck();
+    const context = await odooHealthCheck();
+    const products = await searchOdooProducts();
+
     return NextResponse.json({
       configured: true,
       connected: true,
-      message: "تم الاتصال بـ Odoo بنجاح.",
+      api: {
+        context: true,
+        products_read: true,
+      },
+      product_count: products.length,
+      user_id:
+        typeof context === "object" && context !== null && "uid" in context
+          ? context.uid
+          : null,
+      message: "تم الاتصال بـ Odoo ونجحت قراءة المنتجات.",
     });
   } catch (error) {
     return NextResponse.json(
