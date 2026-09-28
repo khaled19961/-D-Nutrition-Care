@@ -24,6 +24,8 @@ export default function StoreSettingsPage() {
   const [savingBanner,setSavingBanner]=useState<string|null>(null);
   const [message,setMessage]=useState("");
   const [error,setError]=useState("");
+  const [odooTesting,setOdooTesting]=useState(false);
+  const [odooResult,setOdooResult]=useState<{connected:boolean;product_count?:number;message:string}|null>(null);
 
   async function load(){
     setError("");
@@ -45,6 +47,19 @@ export default function StoreSettingsPage() {
   }
 
   useEffect(()=>{load()},[]);
+
+  async function testOdoo(){
+    setOdooTesting(true); setOdooResult(null); setError(""); setMessage("");
+    try {
+      const response=await fetch("/api/admin/odoo/health",{cache:"no-store"});
+      const result=await response.json().catch(()=>({message:"استجابة غير صالحة من الخادم."}));
+      if(!response.ok) throw new Error(result?.message||"فشل اختبار Odoo.");
+      setOdooResult(result);
+      setMessage(result?.message||"تم اختبار Odoo.");
+    } catch (e) {
+      setOdooResult({connected:false,message:e instanceof Error?e.message:"تعذر اختبار Odoo."});
+    } finally { setOdooTesting(false); }
+  }
 
   async function saveSettings(e:FormEvent){
     e.preventDefault(); setMessage(""); setError("");
@@ -143,6 +158,11 @@ export default function StoreSettingsPage() {
 
   return <main className="container py-10">
     <div className="page-heading"><span>تعديل المتجر</span><h1>إعدادات الموقع والبنرات</h1><p>كل الإعدادات الأساسية قابلة للتعديل من هنا بدون تعديل الكود.</p></div>
+    <section className="admin-panel" style={{marginBottom:"1.5rem"}}>
+      <div className="section-heading split"><div><span>تكامل ERP</span><h2>اختبار اتصال Odoo</h2></div><button type="button" className="primary-btn" onClick={testOdoo} disabled={odooTesting}>{odooTesting?"جاري الاختبار...":"اختبار Odoo الآن"}</button></div>
+      {odooResult&&<p className={odooResult.connected?"form-success":"form-error"}>{odooResult.message}{odooResult.connected&&typeof odooResult.product_count==="number"?` عدد المنتجات المقروءة: ${odooResult.product_count}`:""}</p>}
+    </section>
+
     <div className="admin-settings-grid">
       <form onSubmit={saveSettings} className="admin-panel">
         <h2>بيانات الموقع</h2>
