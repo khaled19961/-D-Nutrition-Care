@@ -14,6 +14,38 @@ type Banner = {
   link_url: string | null;
 };
 
+function safeBannerHref(value: string | null) {
+  const href = value?.trim();
+  if (!href || href.startsWith("#")) return null;
+  if (href.startsWith("/") && !href.startsWith("//")) return href;
+
+  try {
+    const parsed = new URL(href);
+    return parsed.protocol === "https:" ? parsed.toString() : null;
+  } catch {
+    return null;
+  }
+}
+
+function HomeBanner({ banner, className, loading }: { banner: Banner; className: string; loading: "eager" | "lazy" }) {
+  const content = (
+    <>
+      <img src={banner.image_url} alt={banner.alt_ar || banner.title_ar || "عرض"} loading={loading} decoding="async" />
+      {(banner.title_ar || banner.subtitle_ar) && (
+        <div className="home-main-banner-caption">
+          {banner.title_ar ? <strong>{banner.title_ar}</strong> : null}
+          {banner.subtitle_ar ? <span>{banner.subtitle_ar}</span> : null}
+        </div>
+      )}
+    </>
+  );
+  const href = safeBannerHref(banner.link_url);
+
+  return href
+    ? <Link href={href} className={className}>{content}</Link>
+    : <div className={className}>{content}</div>;
+}
+
 const homeCategories = [
   { name: "مكملات الرياضيين", slug: "supplements", icon: "dumbbell" as const },
   { name: "الجمال والعناية", slug: "beauty", icon: "beauty" as const },
@@ -110,29 +142,13 @@ export default async function HomePage() {
               <div className="home-hero-layout">
                 <div className="home-hero-fixed">
                   {fixedBanners.map((banner, index) => (
-                    <Link key={`${banner.id}-fixed-${index}`} href={banner.link_url || "#"} className="home-hero-fixed-banner">
-                      <img src={banner.image_url} alt={banner.alt_ar || banner.title_ar || "عرض"} loading="eager" decoding="async" />
-                      {(banner.title_ar || banner.subtitle_ar) && (
-                        <div className="home-main-banner-caption">
-                          {banner.title_ar ? <strong>{banner.title_ar}</strong> : null}
-                          {banner.subtitle_ar ? <span>{banner.subtitle_ar}</span> : null}
-                        </div>
-                      )}
-                    </Link>
+                    <HomeBanner key={`${banner.id}-fixed-${index}`} banner={banner} className="home-hero-fixed-banner" loading="eager" />
                   ))}
                 </div>
                 <div className="home-hero-slider" aria-label="عروض متحركة">
                   <div className="home-hero-slider-track">
                     {[...movingBanners, ...movingBanners].map((banner, index) => (
-                      <Link key={`${banner.id}-slide-${index}`} href={banner.link_url || "#"} className="home-hero-slide">
-                        <img src={banner.image_url} alt={banner.alt_ar || banner.title_ar || "البنر الرئيسي"} loading={index === 0 ? "eager" : "lazy"} decoding="async" />
-                        {(banner.title_ar || banner.subtitle_ar) && (
-                          <div className="home-main-banner-caption">
-                            {banner.title_ar ? <strong>{banner.title_ar}</strong> : null}
-                            {banner.subtitle_ar ? <span>{banner.subtitle_ar}</span> : null}
-                          </div>
-                        )}
-                      </Link>
+                      <HomeBanner key={`${banner.id}-slide-${index}`} banner={banner} className="home-hero-slide" loading={index === 0 ? "eager" : "lazy"} />
                     ))}
                   </div>
                 </div>
