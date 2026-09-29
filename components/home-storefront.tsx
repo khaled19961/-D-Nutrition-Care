@@ -15,21 +15,12 @@ type Product = {
   is_featured: boolean;
   image_url?: string | null;
   image_alt?: string | null;
-  rating?: number | null;
-  reviews_count?: number | null;
 };
 
 type Category = {
   name: string;
   slug: string;
   icon: "dumbbell" | "food" | "wellness" | "weight" | "beauty" | "sport";
-};
-
-type ProductSection = {
-  key: string;
-  title: string;
-  products: Product[];
-  href?: string;
 };
 
 const categoryIcons: Record<Category["icon"], React.ReactNode> = {
@@ -41,11 +32,22 @@ const categoryIcons: Record<Category["icon"], React.ReactNode> = {
   sport: <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4v16M17 4v16M4 7h6M14 7h6M4 17h6M14 17h6" /></svg>,
 };
 
+const productSections = [
+  { key: "combos", title: "الكومبوهات الأكثر طلباً", href: "/store?category=best-selling-combos" },
+  { key: "empower", title: "امباور نيوتريشن", href: "/store?brand=empower-nutrition" },
+  { key: "pre-workout", title: "منتجات ما قبل التمرين", href: "/store?category=pre-workout" },
+  { key: "vitamins", title: "الفيتامينات", href: "/store?category=vitamins" },
+  { key: "proteins", title: "البروتينات", href: "/store?category=proteins" },
+  { key: "amino-acids", title: "الأحماض الأمينية", href: "/store?category=amino-acids" },
+  { key: "protein-snacks", title: "سناك البروتين", href: "/store?category=protein-snacks" },
+  { key: "sports-equipment", title: "المعدات الرياضية", href: "/store?category=sports-equipment" },
+] as const;
+
 export function HomeStorefront({
   products,
   beautyProducts,
   categories,
-  productSections,
+  productSections: sectionProducts,
 }: {
   products: Product[];
   beautyProducts: Product[];
@@ -93,26 +95,31 @@ export function HomeStorefront({
     return (
       <article className="home-product-card">
         <div className="home-product-media">
-          <Link href={`/store/${product.slug}`} className="home-product-image">
-            {product.image_url ? <img src={product.image_url} alt={product.image_alt || product.name_ar} loading="lazy" /> : <span className="home-product-placeholder">صورة المنتج</span>}
+          <Link href={`/store/${product.slug}`} className="home-product-image" aria-label={`عرض ${product.name_ar}`}>
+            {product.image_url ? (
+              <img src={product.image_url} alt={product.image_alt || product.name_ar} loading="lazy" decoding="async" />
+            ) : (
+              <span className="home-product-placeholder" aria-label="الصورة غير متوفرة">
+                <svg viewBox="0 0 48 48" aria-hidden="true"><rect x="11" y="8" width="26" height="32" rx="5" /><path d="M17 17h14M17 24h14M17 31h8" /></svg>
+                <small>الصورة غير متوفرة</small>
+              </span>
+            )}
           </Link>
           <div className="home-product-badges">
             {discount ? <span className="discount-badge">خصم {discount}%</span> : null}
-            {product.stock_quantity > 0 && product.is_new ? <span className="shipping-badge">شحن سريع</span> : null}
+            {product.is_new ? <span className="shipping-badge">وصل حديثاً</span> : null}
           </div>
           <button type="button" className={`home-favorite ${isFavorite ? "is-favorite" : ""}`} aria-label={isFavorite ? "إزالة من المفضلة" : "إضافة إلى المفضلة"} onClick={() => toggleFavorite(product.id)}>
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.8c0 5.5-8.8 10.3-8.8 10.3S3.2 14.3 3.2 8.8A4.7 4.7 0 0 1 12 6.1a4.7 4.7 0 0 1 8.8 2.7Z" /></svg>
           </button>
         </div>
         <div className="home-product-body">
-          <div className="home-product-rating" aria-label={`تقييم ${product.rating || 4.8} من 5`}>
-            <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
-            {product.reviews_count ? <small>({product.reviews_count})</small> : null}
-          </div>
           <Link href={`/store/${product.slug}`} className="home-product-name">{product.name_ar}</Link>
           <div className="home-product-price">
             <strong>{Number(product.price).toLocaleString("ar-SA")} {product.currency || "SAR"}</strong>
-            {product.compare_at_price ? <del>{Number(product.compare_at_price).toLocaleString("ar-SA")} {product.currency || "SAR"}</del> : null}
+            {product.compare_at_price && product.compare_at_price > product.price
+              ? <del>{Number(product.compare_at_price).toLocaleString("ar-SA")} {product.currency || "SAR"}</del>
+              : null}
           </div>
           <button type="button" className="home-add-cart" onClick={() => addToCart(product)}>
             <span>{added === product.id ? "تمت الإضافة" : "أضف إلى السلة"}</span>
@@ -123,98 +130,97 @@ export function HomeStorefront({
     );
   }
 
-  function ProductRail({ items, emptyLabel }: { items: Product[]; emptyLabel: string }) {
-    if (!items.length) {
-      return <div className="home-product-empty">{emptyLabel}</div>;
-    }
+  function ProductRail({ items }: { items: Product[] }) {
+    if (!items.length) return null;
     return <div className="home-product-rail">{items.map((product) => <ProductCard key={product.id} product={product} />)}</div>;
   }
 
-  function RequestedSection({ title, items, href = "/store" }: { title: string; items: Product[]; href?: string }) {
-    return (
-      <section className="home-store-section home-requested-section">
-        <div className="container">
-          <div className="home-store-heading">
-            <h2>{title}</h2>
-            <Link href={href}>عرض الكل ←</Link>
-          </div>
-          <ProductRail items={items} emptyLabel="ستظهر المنتجات هنا بعد نشر المنتجات وربطها بالقسم من لوحة الإدارة." />
-        </div>
-      </section>
-    );
-  }
+  const populatedSections = productSections
+    .map((section) => ({ ...section, items: sectionProducts[section.key] ?? [] }))
+    .filter((section) => section.items.length > 0);
+  const hasCatalogProducts = products.length > 0 || beautyProducts.length > 0 || populatedSections.length > 0;
 
   return (
     <>
-      <section className="home-category-icons">
+      {categories.length ? (
+        <section className="home-category-icons" aria-label="تسوق حسب الفئة">
+          <div className="container">
+            <div className="home-category-rail">
+              {categories.map((category) => (
+                <Link href={`/store?category=${encodeURIComponent(category.slug)}`} className="home-category-item" key={category.slug}>
+                  <span className="home-category-icon">{categoryIcons[category.icon]}</span>
+                  <strong>{category.name}</strong>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      ) : null}
+
+      <section className="home-guidance-section">
         <div className="container">
-          <div className="home-category-rail">
-            {categories.map((category) => (
-              <Link href={`/store?category=${category.slug}`} className="home-category-item" key={category.slug}>
-                <span className="home-category-icon">{categoryIcons[category.icon]}</span>
-                <strong>{category.name}</strong>
-              </Link>
-            ))}
+          <div className="home-guidance-panel">
+            <div className="home-guidance-copy">
+              <span>ابدأ من احتياجك</span>
+              <h2>رعاية غذائية أقرب لأسلوب حياتك</h2>
+              <p>تعرّف على أخصائيي التغذية، أو استكشف خيارات المتجر من D-Nutrition Care.</p>
+              <div className="home-guidance-actions">
+                <Link href="/nutritionists" className="primary-btn">تعرّف على الأخصائيين</Link>
+                <Link href="/store" className="secondary-btn">تصفح المتجر</Link>
+              </div>
+            </div>
+            <div className="home-guidance-art" aria-hidden="true">
+              <span className="home-guidance-orbit home-guidance-orbit-one" />
+              <span className="home-guidance-orbit home-guidance-orbit-two" />
+              <span className="home-guidance-mark">D</span>
+              <span className="home-guidance-leaf">✦</span>
+            </div>
           </div>
         </div>
       </section>
 
-      <section className="home-store-section">
-        <div className="container">
-          <div className="home-store-heading"><h2>عروض مميزة</h2><Link href="/store">عرض الكل ←</Link></div>
-          <ProductRail items={products} emptyLabel="ستظهر المنتجات المميزة هنا بعد نشر المنتجات من لوحة الإدارة." />
-        </div>
-      </section>
-
-      <section className="home-promo home-promo-purple">
-        <div className="container home-promo-inner">
-          <div><span>عروض المتجر</span><h2>عروض قوية لا تفوت</h2><p>اكتشف منتجات مختارة بأسعار مميزة لفترة محدودة.</p><Link href="/offers">تسوق العروض</Link></div>
-          <div className="home-promo-orbs"><i /><i /><i /></div>
-        </div>
-      </section>
-
-      <section className="home-store-section home-beauty-section">
-        <div className="container">
-          <div className="home-store-heading"><h2>الأفضل مبيعًا! - الجمال والعناية</h2><Link href="/store?category=beauty">عرض الكل ←</Link></div>
-          <ProductRail items={beautyProducts} emptyLabel="ستظهر منتجات الجمال والعناية هنا بعد نشرها من لوحة الإدارة." />
-        </div>
-      </section>
-
-      <section className="home-dual-promos">
-        <div className="container home-dual-grid">
-          <Link href="/beauty" className="home-dual-promo home-summer">
-            <div><span>العناية والجمال</span><h3>ركن الصيف</h3><p>ترطيب عميق وعناية متكاملة لبشرة صحية</p><b>اطلبي الآن</b></div>
-          </Link>
-          <Link href="/store?category=supplements" className="home-dual-promo home-supplements">
-            <div><span>المكملات الرياضية</span><h3>اختر مكملات موثوقة</h3><p>صحتك تستحق الأفضل</p><b>اطلبه الآن</b></div>
-          </Link>
-        </div>
-      </section>
-
-      <section className="home-discount-section">
-        <div className="container">
-          <div className="home-discount-heading"><h2>تصفح حسب الخصم</h2></div>
-          <div className="home-discount-rail">
-            {[["حتى 20%","حتى 20%"],["21% - 30%","من 21% حتى 30%"],["31% - 40%","من 31% حتى 40%"],["41% - 50%","من 41% حتى 50%"],["50%+","أكثر من 50%"]].map(([value,label]) => (
-              <Link href={`/offers?discount=${encodeURIComponent(value)}`} className="home-discount-card" key={value}>
-                <strong>{value}</strong><span>{label}</span><small>تصفح الآن ←</small>
-              </Link>
-            ))}
+      {products.length > 0 ? (
+        <section className="home-store-section">
+          <div className="container">
+            <div className="home-store-heading"><h2>منتجات مميزة</h2><Link href="/store">عرض الكل ←</Link></div>
+            <ProductRail items={products} />
           </div>
-        </div>
-      </section>
+        </section>
+      ) : null}
 
-      <div className="home-requested-sections">
-        <RequestedSection title="الكومبوهات الأكثر مبيعًا!!" items={productSections.combos ?? []} href="/store?category=best-selling-combos" />
-        <RequestedSection title="امباور نيوتريشن" items={productSections.empower ?? []} href="/store?brand=empower-nutrition" />
-        <RequestedSection title="اكثر المنتجات مبيعا!! - قبل التمرين" items={productSections["pre-workout"] ?? []} href="/store?category=pre-workout" />
-        <RequestedSection title="اكثر المنتجات مبيعا!! - فيتامين" items={productSections.vitamins ?? []} href="/store?category=vitamins" />
-        <RequestedSection title="اكثر المنتجات مبيعا!! - البروتينات" items={productSections.proteins ?? []} href="/store?category=proteins" />
-        <RequestedSection title="اكثر المنتجات مبيعا!! - الأحماض الأمينية" items={productSections["amino-acids"] ?? []} href="/store?category=amino-acids" />
-        <RequestedSection title="اكثر المنتجات مبيعا!! - سناك بروتين" items={productSections["protein-snacks"] ?? []} href="/store?category=protein-snacks" />
-        <RequestedSection title="اكثر المنتجات مبيعا!! - معدات رياضية" items={productSections["sports-equipment"] ?? []} href="/store?category=sports-equipment" />
-        <RequestedSection title="منتجات مميزة" items={productSections.featured ?? []} href="/store?featured=true" />
-      </div>
+      {beautyProducts.length > 0 ? (
+        <section className="home-store-section home-beauty-section">
+          <div className="container">
+            <div className="home-store-heading"><h2>الجمال والعناية</h2><Link href="/store?category=beauty">عرض الكل ←</Link></div>
+            <ProductRail items={beautyProducts} />
+          </div>
+        </section>
+      ) : null}
+
+      {populatedSections.map((section) => (
+        <section className="home-store-section home-requested-section" key={section.key}>
+          <div className="container">
+            <div className="home-store-heading"><h2>{section.title}</h2><Link href={section.href}>عرض الكل ←</Link></div>
+            <ProductRail items={section.items} />
+          </div>
+        </section>
+      ))}
+
+      {!hasCatalogProducts ? (
+        <section className="home-empty-catalog">
+          <div className="container home-empty-catalog-inner">
+            <div>
+              <span>المتجر</span>
+              <h2>نجهّز لك خيارات مفيدة</h2>
+              <p>ما فيه منتجات منشورة حالياً. تقدر تتعرف على الأخصائيين أو ترجع للمتجر لاحقاً.</p>
+            </div>
+            <div className="home-empty-actions">
+              <Link href="/nutritionists" className="primary-btn">تعرّف على الأخصائيين</Link>
+              <Link href="/store" className="secondary-btn">زيارة المتجر</Link>
+            </div>
+          </div>
+        </section>
+      ) : null}
     </>
   );
 }

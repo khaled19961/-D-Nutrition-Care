@@ -5,11 +5,11 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
 const items = [
-  ["/", "الرئيسية"],
+  ["/store", "المتجر"],
+  ["/categories", "الفئات"],
   ["/nutritionists", "الأخصائيون"],
-  ["/dashboard", "حسابي"],
+  ["/booking", "حجز استشارة"],
   ["/cart", "السلة"],
-  ["/more", "المزيد"],
 ] as const;
 
 const mobileItems = [
@@ -49,7 +49,7 @@ export function MainNav() {
   return (
     <nav className="desktop-nav" aria-label="التنقل الرئيسي">
       {items.map(([href, label]) => (
-        <Link key={href} href={href} className={pathname === href ? "active" : undefined}>
+        <Link key={href} href={href} className={pathname === href || pathname.startsWith(`${href}/`) ? "active" : undefined} aria-current={pathname === href ? "page" : undefined}>
           {label}{href === "/cart" && count > 0 ? <small className="cart-count">{count}</small> : null}
         </Link>
       ))}

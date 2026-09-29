@@ -36,8 +36,8 @@ export async function SiteChrome({ children }: { children: React.ReactNode }) {
           </Link>
           <MainNav />
           <div className="header-actions">
-            <form action="/nutritionists" method="get" className="header-search">
-              <input name="q" aria-label="ابحث عن أخصائي تغذية" placeholder="ابحث عن أخصائي" />
+            <form action="/store" method="get" className="header-search">
+              <input name="q" aria-label="ابحث عن المنتجات" placeholder="ابحث في المتجر" />
               <button type="submit">بحث</button>
             </form>
             <div className="header-account-links" aria-label="حساب العميل">

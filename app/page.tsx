@@ -31,40 +31,43 @@ function HomeBanner({ banner, className, loading }: { banner: Banner; className:
   const content = (
     <>
       <img src={banner.image_url} alt={banner.alt_ar || banner.title_ar || "عرض"} loading={loading} decoding="async" />
-      {(banner.title_ar || banner.subtitle_ar) && (
+      {(banner.title_ar || banner.subtitle_ar) ? (
         <div className="home-main-banner-caption">
           {banner.title_ar ? <strong>{banner.title_ar}</strong> : null}
           {banner.subtitle_ar ? <span>{banner.subtitle_ar}</span> : null}
         </div>
-      )}
+      ) : null}
     </>
   );
   const href = safeBannerHref(banner.link_url);
 
-  return href
-    ? <Link href={href} className={className}>{content}</Link>
-    : <div className={className}>{content}</div>;
+  return href ? <Link href={href} className={className}>{content}</Link> : <div className={className}>{content}</div>;
 }
 
-const homeCategories = [
-  { name: "مكملات الرياضيين", slug: "supplements", icon: "dumbbell" as const },
-  { name: "الجمال والعناية", slug: "beauty", icon: "beauty" as const },
-  { name: "التحكم في الوزن", slug: "weight-control", icon: "weight" as const },
-  { name: "الصحة والعافية", slug: "health-wellness", icon: "wellness" as const },
-  { name: "الأغذية الصحية", slug: "healthy-food", icon: "food" as const },
-  { name: "معدات رياضية", slug: "sports-equipment", icon: "sport" as const },
+function categoryIconFor(name: string, slug: string): "dumbbell" | "food" | "wellness" | "weight" | "beauty" | "sport" {
+  const value = `${name} ${slug}`.toLowerCase();
+  if (/beauty|جمال|عناية/.test(value)) return "beauty";
+  if (/weight|وزن/.test(value)) return "weight";
+  if (/food|meal|غذاء|طعام/.test(value)) return "food";
+  if (/sport|gym|equipment|رياضة|معدات/.test(value)) return "sport";
+  if (/supplement|protein|مكمل|بروتين/.test(value)) return "dumbbell";
+  return "wellness";
+}
+
+const homeProductSections: Array<{ key: string; title: string; categorySlug?: string; brandSlug?: string }> = [
+  { key: "combos", title: "الكومبوهات الأكثر طلباً", categorySlug: "best-selling-combos" },
+  { key: "empower", title: "امباور نيوتريشن", brandSlug: "empower-nutrition" },
+  { key: "pre-workout", title: "منتجات ما قبل التمرين", categorySlug: "pre-workout" },
+  { key: "vitamins", title: "الفيتامينات", categorySlug: "vitamins" },
+  { key: "proteins", title: "البروتينات", categorySlug: "proteins" },
+  { key: "amino-acids", title: "الأحماض الأمينية", categorySlug: "amino-acids" },
+  { key: "protein-snacks", title: "سناك البروتين", categorySlug: "protein-snacks" },
+  { key: "sports-equipment", title: "المعدات الرياضية", categorySlug: "sports-equipment" },
 ];
 
-const homeProductSections: Array<{ key: string; title: string; categorySlug?: string; brandSlug?: string; featured?: boolean }> = [
-  { key: "combos", title: "الكومبوهات الأكثر مبيعًا!!", categorySlug: "best-selling-combos" },
-  { key: "empower", title: "امباور نيوتريشن", brandSlug: "empower-nutrition" },
-  { key: "pre-workout", title: "اكثر المنتجات مبيعا!! - قبل التمرين", categorySlug: "pre-workout" },
-  { key: "vitamins", title: "اكثر المنتجات مبيعا!! - فيتامين", categorySlug: "vitamins" },
-  { key: "proteins", title: "اكثر المنتجات مبيعا!! - البروتينات", categorySlug: "proteins" },
-  { key: "amino-acids", title: "اكثر المنتجات مبيعا!! - الأحماض الأمينية", categorySlug: "amino-acids" },
-  { key: "protein-snacks", title: "اكثر المنتجات مبيعا!! - سناك بروتين", categorySlug: "protein-snacks" },
-  { key: "sports-equipment", title: "اكثر المنتجات مبيعا!! - معدات رياضية", categorySlug: "sports-equipment" },
-  { key: "featured", title: "منتجات مميزة", featured: true },
+const heroLinks = [
+  { href: "/nutritionists", eyebrow: "الرعاية الغذائية", title: "تعرّف على الأخصائيين", icon: "✦" },
+  { href: "/booking", eyebrow: "خطوتك القادمة", title: "استكشف الحجز", icon: "↗" },
 ];
 
 export default async function HomePage() {
@@ -104,6 +107,11 @@ export default async function HomePage() {
   const normalizedAll = normalizeProducts(rawProducts);
   const categoryIdBySlug = new Map((categories ?? []).map((item) => [item.slug, item.id]));
   const brandIdBySlug = new Map((brands ?? []).map((item) => [item.slug, item.id]));
+  const displayCategories = (categories ?? []).slice(0, 6).map((category) => ({
+    name: category.name_ar,
+    slug: category.slug,
+    icon: categoryIconFor(category.name_ar, category.slug),
+  }));
 
   const productsByCategory = (slug: string) => {
     const categoryId = categoryIdBySlug.get(slug);
@@ -120,49 +128,72 @@ export default async function HomePage() {
   };
 
   const featuredProducts = normalizedAll.filter((product) => product.is_featured).slice(0, 8);
-  const productSections = Object.fromEntries(homeProductSections.map((section) => [
+  const sectionProducts = Object.fromEntries(homeProductSections.map((section) => [
     section.key,
-    section.featured
-      ? featuredProducts
-      : section.brandSlug
-        ? productsByBrand(section.brandSlug)
-        : productsByCategory(section.categorySlug!),
+    section.brandSlug ? productsByBrand(section.brandSlug) : productsByCategory(section.categorySlug!),
   ]));
 
-  const activeBanners = (banners ?? []) as Banner[];
-  const fixedBanners = activeBanners.slice(0, 2);
-  const movingBanners = activeBanners.slice(2, 10);
+  const activeBanners = ((banners ?? []) as Banner[]).filter((banner) => Boolean(banner.image_url?.trim()));
+  const sideBanners = activeBanners.slice(1, 3);
+  const additionalBanners = activeBanners.slice(3, 10);
 
   return (
     <SiteChrome>
       <main>
-        <section className="hero-storefront" aria-label="البنر الرئيسي">
+        <section className="hero-storefront" aria-label="الواجهة الرئيسية">
           <div className="container">
             {activeBanners.length ? (
-              <div className="home-hero-layout">
-                <div className="home-hero-fixed">
-                  {fixedBanners.map((banner, index) => (
-                    <HomeBanner key={`${banner.id}-fixed-${index}`} banner={banner} className="home-hero-fixed-banner" loading="eager" />
-                  ))}
-                </div>
-                <div className="home-hero-slider" aria-label="عروض متحركة">
-                  <div className="home-hero-slider-track">
-                    {[...movingBanners, ...movingBanners].map((banner, index) => (
-                      <HomeBanner key={`${banner.id}-slide-${index}`} banner={banner} className="home-hero-slide" loading={index === 0 ? "eager" : "lazy"} />
+              <>
+                <div className="home-hero-layout">
+                  <div className="home-hero-side">
+                    {sideBanners.map((banner) => (
+                      <HomeBanner key={banner.id} banner={banner} className="home-hero-side-banner" loading="lazy" />
+                    ))}
+                    {heroLinks.slice(0, Math.max(0, 2 - sideBanners.length)).map((item) => (
+                      <Link href={item.href} className="home-hero-side-cta" key={item.href}>
+                        <span>{item.icon}</span>
+                        <small>{item.eyebrow}</small>
+                        <strong>{item.title}</strong>
+                      </Link>
                     ))}
                   </div>
+                  <div className="home-hero-main">
+                    <HomeBanner banner={activeBanners[0]} className="home-hero-main-banner" loading="eager" />
+                  </div>
+                </div>
+                {additionalBanners.length ? (
+                  <div className="home-extra-banner-rail" aria-label="عروض إضافية">
+                    {additionalBanners.map((banner) => <HomeBanner key={banner.id} banner={banner} className="home-extra-banner" loading="lazy" />)}
+                  </div>
+                ) : null}
+              </>
+            ) : (
+              <div className="hero-banner-empty">
+                <div className="hero-banner-copy">
+                  <span>مرحباً بك في D-Nutrition Care</span>
+                  <h1>رعاية غذائية أقرب لأسلوب حياتك</h1>
+                  <p>اكتشف خدمات أخصائيي التغذية، واستكشف المتجر بخيارات تناسب احتياجك.</p>
+                  <div className="hero-banner-actions">
+                    <Link href="/nutritionists" className="primary-btn large">تعرّف على الأخصائيين</Link>
+                    <Link href="/store" className="secondary-btn large">تصفح المتجر</Link>
+                  </div>
+                </div>
+                <div className="hero-banner-art" aria-hidden="true">
+                  <span className="hero-banner-orbit hero-banner-orbit-one" />
+                  <span className="hero-banner-orbit hero-banner-orbit-two" />
+                  <span className="hero-banner-brand-mark">D</span>
+                  <span className="hero-banner-star">✦</span>
                 </div>
               </div>
-            ) : (
-              <div className="hero-banner-empty"><div><span>ابدأ رحلتك الصحية</span><h1>منتجات مختارة لصحتك وعافيتك</h1><p>تصفح المنتجات والعروض من مكان واحد.</p></div></div>
             )}
           </div>
         </section>
+
         <HomeStorefront
           products={featuredProducts}
-          beautyProducts={productsByCategory("beauty")}
-          categories={homeCategories}
-          productSections={productSections}
+          beautyProducts={productsByCategory("beauty").filter((product) => !product.is_featured)}
+          categories={displayCategories}
+          productSections={sectionProducts}
         />
       </main>
     </SiteChrome>
