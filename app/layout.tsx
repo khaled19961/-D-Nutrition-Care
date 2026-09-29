@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { getSiteOrigin } from "@/lib/site-url";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
 
 export const metadata: Metadata = {
-  ...(siteUrl ? { metadataBase: new URL(siteUrl) } : {}),
+  ...(siteUrl ? { metadataBase: new URL(`${getSiteOrigin()}/`) } : {}),
   title: {
     default: "D-Nutrition-Care | رعاية غذائية متكاملة",
     template: "%s | D-Nutrition-Care"

@@ -53,8 +53,9 @@ export default function BookingPage() {
         .order("price", { ascending: true });
 
       if (!active) return;
-      if (error) setError(error.message);
+      if (error) setError("تعذر تحميل الخدمات حالياً. حاول مرة أخرى لاحقاً.");
       else {
+        setError("");
         const nextServices = (data ?? []) as Service[];
         const filtered = initialNutritionistId
           ? nextServices.filter((item) => item.nutritionist_id === initialNutritionistId)
@@ -75,6 +76,7 @@ export default function BookingPage() {
     let active = true;
     setSlotId("");
     setSlots([]);
+    setError("");
 
     const selected = services.find((item) => item.id === serviceId);
     if (!selected) return;
@@ -93,7 +95,7 @@ export default function BookingPage() {
         .limit(30);
 
       if (!active) return;
-      if (error) setError(error.message);
+      if (error) setError("تعذر تحميل المواعيد حالياً. حاول مرة أخرى لاحقاً.");
       else setSlots(data ?? []);
       setLoadingSlots(false);
     }
@@ -180,7 +182,7 @@ export default function BookingPage() {
                 <select value={slotId} onChange={(e) => setSlotId(e.target.value)} disabled={!serviceId || loadingSlots}
                   className="w-full rounded-xl border border-[var(--border)] bg-white px-4 py-3 disabled:opacity-60">
                   <option value="">
-                    {loadingSlots ? "جارٍ تحميل المواعيد..." : "اختر الموعد"}
+                    {loadingSlots ? "جارٍ تحميل المواعيد..." : slots.length ? "اختر الموعد" : serviceId ? "لا توجد مواعيد متاحة حالياً" : "اختر الموعد"}
                   </option>
                   {slots.map((slot) => (
                     <option key={slot.id} value={slot.id}>
