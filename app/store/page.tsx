@@ -91,12 +91,12 @@ export default async function StorePage({ searchParams }: { searchParams: Promis
   return (
     <SiteChrome>
       <main>
-        <section className="page-hero store-page-hero">
+        <section className="page-hero">
           <div className="container">
             <span>متجر D-Nutrition</span>
             <h1>{queryText ? "نتائج البحث" : "منتجات التغذية والعناية"}</h1>
             <p>{queryText ? `نتائج البحث عن «${queryText}»` : "تصفح المنتجات المنشورة والمتوفرة فعلياً في الكتالوج."}</p>
-            <form action="/store" method="get" className="store-search-form">
+            <form action="/store" method="get" className="header-search" style={{ marginTop: 18 }}>
               <input name="q" defaultValue={queryText} aria-label="ابحث عن منتج" placeholder="ابحث عن منتج بالاسم" />
               <button type="submit">بحث</button>
             </form>
@@ -116,7 +116,7 @@ export default async function StorePage({ searchParams }: { searchParams: Promis
                   return (
                     <article className="product-card" key={product.id}>
                       <Link href={`/store/${product.slug}`} className="product-image" aria-label={`عرض ${product.name_ar}`}>
-                        {image?.image_url ? <img src={image.image_url} alt={image.alt_ar || product.name_ar} loading="lazy" /> : <span className="product-image-placeholder">الصورة غير متوفرة</span>}
+                        {image?.image_url ? <img src={image.image_url} alt={image.alt_ar || product.name_ar} loading="lazy" /> : <span>الصورة غير متوفرة</span>}
                       </Link>
                       <div className="product-card-body">
                         <div className="product-badges">{product.is_new ? <small>جديد</small> : null}{discount ? <small>خصم {discount}%</small> : null}</div>
@@ -135,11 +135,10 @@ export default async function StorePage({ searchParams }: { searchParams: Promis
                 })}
               </div>
             ) : (
-              <div className="store-empty-panel">
-                <span className="store-empty-icon" aria-hidden="true">⌕</span>
+              <div className="empty-state">
                 <h2>{unresolvedFilter ? "القسم المطلوب غير موجود" : emptyTitle}</h2>
                 <p>{unresolvedFilter ? "تأكد من الرابط أو اختر فئة ثانية من أقسام المتجر." : emptyDescription}</p>
-                <div className="store-empty-actions">
+                <div className="store-empty-actions" style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 10, marginTop: 14 }}>
                   {hasFilters ? <Link href="/store" className="primary-btn">عرض كل المنتجات</Link> : null}
                   <Link href="/nutritionists" className="secondary-btn">تعرّف على الأخصائيين</Link>
                 </div>
